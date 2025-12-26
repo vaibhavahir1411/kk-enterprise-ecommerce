@@ -13,7 +13,7 @@ $where = "WHERE is_active = 1";
 $params = [];
 
 if ($category_slug) {
-    $stmt = $pdo->prepare("SELECT id FROM categories WHERE slug = ?");
+    $stmt = $pdo->prepare("SELECT id FROM categories WHERE slug = ? AND is_active = 1");
     $stmt->execute([$category_slug]);
     $cat_id = $stmt->fetchColumn();
     if ($cat_id) { $where .= " AND category_id = ?"; $params[] = $cat_id; }
@@ -49,7 +49,7 @@ $stmt->execute();
 $products = $stmt->fetchAll();
 
 // Fetch Categories for Sidebar
-$categories = $pdo->query("SELECT * FROM categories ORDER BY display_order ASC")->fetchAll();
+$categories = $pdo->query("SELECT * FROM categories WHERE is_active = 1 ORDER BY display_order ASC")->fetchAll();
 ?>
 
 <!-- Page Header -->
@@ -177,24 +177,32 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY display_order ASC")
                                     <a href="product.php?id=<?php echo $prod['id']; ?>" class="quick-view-btn">View Details</a>
                                 </div>
                             </div>
-                            
-                            <div class="product-info">
-                                <a href="product.php?id=<?php echo $prod['id']; ?>">
-                                    <h3 class="product-name"><?php echo htmlspecialchars($prod['name']); ?></h3>
-                                </a>
-                                <div class="product-price">
-                                    <span class="current-price">₹<?php echo $prod['sale_price'] ?: $prod['price']; ?></span>
-                                    <?php if($prod['sale_price']): ?>
-                                        <span class="original-price">₹<?php echo $prod['price']; ?></span>
-                                    <?php endif; ?>
-                                </div>
-                                <form action="cart_actions.php" method="POST" class="mt-2">
+                        <div class="product-info">
+                            <h3 class="product-name">
+                                <a href="product.php?slug=<?php echo $prod['slug']; ?>"><?php echo htmlspecialchars($prod['name']); ?></a>
+                            </h3>
+                            <div class="product-price">
+                                <?php if($prod['sale_price']): ?>
+                                    <span class="current-price">₹<?php echo number_format($prod['sale_price'], 2); ?></span>
+                                    <span class="original-price">₹<?php echo number_format($prod['price'], 2); ?></span>
+                                <?php else: ?>
+                                    <span class="current-price">₹<?php echo number_format($prod['price'], 2); ?></span>
+                                <?php endif; ?>
+                            </div>
+                            <?php if($prod['stock_status'] == 'out_of_stock'): ?>
+                                <button class="btn-add-cart" style="background: #dc3545; cursor: not-allowed;" disabled>
+                                    Out of Stock
+                                </button>
+                            <?php else: ?>
+                                <form action="cart_actions.php" method="POST" class="mt-auto">
                                     <input type="hidden" name="action" value="add">
                                     <input type="hidden" name="product_id" value="<?php echo $prod['id']; ?>">
-                                    <input type="hidden" name="quantity" value="1">
-                                    <button type="submit" class="btn-add-cart"><i class="bi bi-cart-plus"></i> Add to Cart</button>
+                                    <button type="submit" class="btn-add-cart">
+                                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
+                                    </button>
                                 </form>
-                            </div>
+                            <?php endif; ?>
+                        </div>
                     </div>
                     <?php endforeach; ?>
                     <?php else: ?>

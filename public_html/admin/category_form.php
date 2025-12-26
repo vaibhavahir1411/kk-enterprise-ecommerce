@@ -19,13 +19,8 @@ if (isset($_GET['id'])) {
     <?php endif; ?>
 
     <div class="mb-3">
-        <label>Name</label>
+        <label>Category Name</label>
         <input type="text" name="name" class="form-control" value="<?php echo $category ? htmlspecialchars($category['name']) : ''; ?>" required>
-    </div>
-    
-    <div class="mb-3">
-        <label>Display Order</label>
-        <input type="number" name="display_order" class="form-control" value="<?php echo $category ? $category['display_order'] : 0; ?>">
     </div>
 
     <div class="mb-3">

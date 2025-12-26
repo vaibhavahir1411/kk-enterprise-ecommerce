@@ -31,8 +31,8 @@ if (!isset($_SESSION['admin_id'])) {
         <a href="products.php">Products</a>
         <a href="inquiries.php">Inquiries</a>
 
-        <!-- <a href="banners.php">Banners</a> (Disabled) -->
-        <a href="import_csv.php">Import CSV</a>
+        <!-- Hidden temporarily -->
+        <a href="import_csv.php" style="display:none;">Import CSV</a>
 
         <a href="../index.php" target="_blank" class="mt-4 text-info">View Website</a>
         <a href="logout.php" class="text-danger mt-2">Logout</a>

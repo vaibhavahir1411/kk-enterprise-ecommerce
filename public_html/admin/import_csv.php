@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['csv_file'])) {
 ?>
 
 <h3>Import Products CSV</h3>
-<p>Upload a CSV file with columns: <strong>Name, Category, Price, Sale Price, Description, Stock Status</strong></p>
+<p>Upload a CSV file with columns: <strong>Name, Category, Price, Sale Price, Description, Stock Status (1 = in_stock, 0 = out_of_stock)</strong></p>
 <form method="POST" enctype="multipart/form-data">
     <div class="mb-3">
         <input type="file" name="csv_file" class="form-control" required accept=".csv">

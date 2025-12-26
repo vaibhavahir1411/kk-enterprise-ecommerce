@@ -67,6 +67,13 @@ try {
         $stock = $_POST['stock_status'];
         $active = isset($_POST['is_active']) ? 1 : 0;
         $featured = isset($_POST['is_featured']) ? 1 : 0;
+        
+        // Validate sale price
+        if (!empty($sale_price) && $sale_price >= $price) {
+            $_SESSION['error'] = "Sale price must be less than regular price!";
+            header("Location: product_form.php");
+            exit;
+        }
 
         // Uniqueness check for slug
         $chk = $pdo->prepare("SELECT COUNT(*) FROM products WHERE slug = ?");
@@ -77,8 +84,14 @@ try {
         $stmt->execute([$name, $slug, $cat_id, $price, $sale_price, $desc, $stock, $active, $featured]);
         $product_id = $pdo->lastInsertId();
 
-        // Handle Images
-        if (isset($_FILES['images'])) {
+        // Handle Images with validation
+        if (isset($_FILES['images']) && !empty($_FILES['images']['name'][0])) {
+            $imageCount = count(array_filter($_FILES['images']['name']));
+            if ($imageCount > 6) {
+                $_SESSION['error'] = "Maximum 6 images allowed per product. You uploaded $imageCount images.";
+                header("Location: product_form.php?id=$product_id");
+                exit;
+            }
             handleImageUploads($pdo, $product_id, $_FILES['images']);
             // Set first image as primary if none exists
             $pdo->exec("UPDATE product_images SET is_primary = 1 WHERE product_id = $product_id ORDER BY id ASC LIMIT 1");
@@ -97,6 +110,13 @@ try {
         $stock = $_POST['stock_status'];
         $active = isset($_POST['is_active']) ? 1 : 0;
         $featured = isset($_POST['is_featured']) ? 1 : 0;
+        
+        // Validate sale price
+        if (!empty($sale_price) && $sale_price >= $price) {
+            $_SESSION['error'] = "Sale price must be less than regular price!";
+            header("Location: product_form.php?id=$id");
+            exit;
+        }
 
         $stmt = $pdo->prepare("UPDATE products SET name=?, category_id=?, price=?, sale_price=?, description=?, stock_status=?, is_active=?, is_featured=? WHERE id=?");
         $stmt->execute([$name, $cat_id, $price, $sale_price, $desc, $stock, $active, $featured, $id]);
@@ -115,8 +135,22 @@ try {
             }
         }
 
-        // Handle New Images
-        if (isset($_FILES['images'])) {
+        // Handle New Images with validation
+        if (isset($_FILES['images']) && !empty($_FILES['images']['name'][0])) {
+            // Count existing images
+            $stmt_count = $pdo->prepare("SELECT COUNT(*) FROM product_images WHERE product_id = ?");
+            $stmt_count->execute([$id]);
+            $existingCount = $stmt_count->fetchColumn();
+            
+            $newImageCount = count(array_filter($_FILES['images']['name']));
+            $totalImages = $existingCount + $newImageCount;
+            
+            if ($totalImages > 6) {
+                $_SESSION['error'] = "Maximum 6 images allowed. You have $existingCount existing image(s) and tried to upload $newImageCount more.";
+                header("Location: product_form.php?id=$id");
+                exit;
+            }
+            
             handleImageUploads($pdo, $id, $_FILES['images']);
         }
         

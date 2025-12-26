@@ -1,10 +1,19 @@
+<!-- Footer -->
 <footer class="footer">
     <div class="container">
+        <!-- Disclaimer Note -->
+        <div class="footer-disclaimer" style="background: rgba(255, 107, 53, 0.1); border-left: 4px solid #ff6b35; padding: 1rem 1.5rem; margin-bottom: 2rem; border-radius: 8px;">
+            <p style="margin: 0; color: #fff; font-size: 0.9rem;">
+                <strong>Note:</strong> We are not Selling Online Crackers – Website is only for offline Booking and Display purpose. We do not take any kind of amount or online transaction via our website.
+            </p>
+        </div>
+
         <div class="footer-grid">
             <!-- Brand -->
             <div class="footer-brand">
-                <div class="footer-logo">
-                     <span class="brand-text" style="color:var(--white)">KK Enterprise</span>
+                <div class="footer-logo" style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                    <img src="assets/logo.png" alt="KK Enterprise Logo" style="height: 40px; width: auto;">
+                    <span class="brand-text" style="color:var(--white); font-size: 1.5rem; font-weight: 700;">KK Enterprise</span>
                 </div>
                 <p class="footer-desc">
                     Lighting up your celebrations with premium fireworks. Safe, certified, and spectacular.
@@ -27,14 +36,30 @@
                 </div>
             </div>
 
+            <!-- Customer Support -->
+            <div>
+                <h5 class="footer-title">Customer Support</h5>
+                <div class="footer-links">
+                    <a href="terms.php">Terms and Conditions</a>
+                    <a href="privacy.php">Privacy Policy</a>
+                    <a href="disclaimer.php">Disclaimer</a>
+                </div>
+            </div>
+
             <!-- Contact -->
             <div>
                 <h5 class="footer-title">Contact</h5>
-                <ul class="contact-info">
-                    <li><i class="bi bi-geo-alt contact-icon"></i> Test address</li>
-                    <li><i class="bi bi-telephone contact-icon"></i> +91 00000 00000</li>
-                    <li><i class="bi bi-envelope contact-icon"></i> info@kkenterprise.com</li>
-                </ul>
+                <div class="footer-links">
+                    <a href="#" style="pointer-events: none; cursor: default;">
+                        <i class="bi bi-geo-alt" style="margin-right: 0.5rem;"></i>Test address
+                    </a>
+                    <a href="tel:+910000000000">
+                        <i class="bi bi-telephone" style="margin-right: 0.5rem;"></i>+91 00000 00000
+                    </a>
+                    <a href="mailto:info@kkenterprise.com">
+                        <i class="bi bi-envelope" style="margin-right: 0.5rem;"></i>info@kkenterprise.com
+                    </a>
+                </div>
             </div>
 
         </div>

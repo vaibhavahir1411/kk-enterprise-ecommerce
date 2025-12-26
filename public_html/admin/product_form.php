@@ -7,7 +7,7 @@ $product_images = [];
 $is_edit = false;
 
 // Fetch categories for dropdown
-$categories = $pdo->query("SELECT * FROM categories ORDER BY name ASC")->fetchAll();
+$categories = $pdo->query("SELECT * FROM categories WHERE is_active = 1 ORDER BY name ASC")->fetchAll();
 
 if (isset($_GET['id'])) {
     $stmt = $pdo->prepare("SELECT * FROM products WHERE id = ?");
@@ -50,12 +50,12 @@ if (isset($_GET['id'])) {
             </div>
 
             <div class="card mb-3">
-                <div class="card-header">Images (Max 5-6)</div>
+                <div class="card-header">Images (Max 6)</div>
                 <div class="card-body">
                     <div class="mb-3">
-                        <label for="images" class="form-label">Upload New Images</label>
-                        <input type="file" class="form-control" id="images" name="images[]" multiple accept="image/*">
-                        <small class="text-muted">You can select multiple files.</small>
+                        <label for="images" class="form-label">Upload New Images (Max 6)</label>
+                        <input type="file" class="form-control" id="images" name="images[]" multiple accept="image/*" onchange="validateFileCount(this)">
+                        <small class="text-muted">You can select multiple files (maximum 6 total including existing images).</small>
                     </div>
 
                     <?php if ($is_edit && !empty($product_images)): ?>
@@ -97,13 +97,20 @@ if (isset($_GET['id'])) {
                     </div>
 
                     <div class="mb-3">
-                        <label for="price" class="form-label">Regular Price</label>
-                        <input type="number" step="0.01" class="form-control" id="price" name="price" value="<?php echo $is_edit ? $product['price'] : ''; ?>">
+                        <label for="price" class="form-label">Regular Price (₹)</label>
+                        <input type="number" step="0.01" class="form-control" id="price" name="price" value="<?php echo $is_edit ? $product['price'] : ''; ?>" required>
                     </div>
 
                     <div class="mb-3">
-                        <label for="sale_price" class="form-label">Sale Price (Optional)</label>
+                        <label for="discount_percent" class="form-label">Discount (%)</label>
+                        <input type="number" step="0.01" class="form-control" id="discount_percent" name="discount_percent" value="<?php echo $is_edit && $product['sale_price'] ? round((($product['price'] - $product['sale_price']) / $product['price']) * 100, 2) : ''; ?>" min="0" max="100">
+                        <small class="text-muted">Auto-calculates sale price</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="sale_price" class="form-label">Sale Price (₹)</label>
                         <input type="number" step="0.01" class="form-control" id="sale_price" name="sale_price" value="<?php echo $is_edit ? $product['sale_price'] : ''; ?>">
+                        <small class="text-muted">Must be less than regular price</small>
                     </div>
 
                     <div class="mb-3">
@@ -131,5 +138,123 @@ if (isset($_GET['id'])) {
         </div>
     </div>
 </form>
+
+<script>
+// Price validation and discount calculation
+const priceInput = document.getElementById('price');
+const salePriceInput = document.getElementById('sale_price');
+const discountInput = document.getElementById('discount_percent');
+
+// Calculate sale price from discount percentage
+discountInput.addEventListener('input', function() {
+    const price = parseFloat(priceInput.value) || 0;
+    const discount = parseFloat(this.value) || 0;
+    if (price > 0 && discount > 0) {
+        const salePrice = price - (price * discount / 100);
+        salePriceInput.value = salePrice.toFixed(2);
+    }
+});
+
+// Calculate discount from sale price
+salePriceInput.addEventListener('input', function() {
+    const price = parseFloat(priceInput.value) || 0;
+    const salePrice = parseFloat(this.value) || 0;
+    if (price > 0 && salePrice > 0) {
+        const discount = ((price - salePrice) / price) * 100;
+        discountInput.value = discount.toFixed(2);
+    }
+});
+
+// Validate on form submit
+document.querySelector('form').addEventListener('submit', function(e) {
+    const price = parseFloat(priceInput.value) || 0;
+    const salePrice = parseFloat(salePriceInput.value) || 0;
+    
+    if (salePrice > 0 && salePrice >= price) {
+        e.preventDefault();
+        alert('Sale price must be less than regular price!');
+        return false;
+    }
+});
+
+// Validate file count for multiple file input
+function validateFileCount(input) {
+    const MAX_IMAGES = 6;
+    const existingImages = <?php echo $is_edit ? count($images) : 0; ?>;
+    const selectedFiles = input.files.length;
+    const totalImages = existingImages + selectedFiles;
+    
+    if (totalImages > MAX_IMAGES) {
+        alert(`You can only upload ${MAX_IMAGES - existingImages} more image(s). You currently have ${existingImages} image(s) and selected ${selectedFiles} file(s).`);
+        input.value = ''; // Clear the selection
+        return false;
+    }
+    
+    if (selectedFiles > MAX_IMAGES) {
+        alert(`Maximum ${MAX_IMAGES} images allowed. You selected ${selectedFiles} files.`);
+        input.value = ''; // Clear the selection
+        return false;
+    }
+}
+
+
+// Image limit functionality
+const MAX_IMAGES = 6;
+let imageCount = 0;
+
+// Count existing image rows on page load
+document.addEventListener('DOMContentLoaded', function() {
+    imageCount = document.querySelectorAll('.image-row').length;
+    updateAddButton();
+});
+
+function addImageRow() {
+    if (imageCount >= MAX_IMAGES) {
+        alert('Maximum 6 images allowed per product');
+        return;
+    }
+    
+    imageCount++;
+    const container = document.getElementById('image-rows');
+    const newRow = document.createElement('div');
+    newRow.className = 'image-row mb-3';
+    newRow.innerHTML = `
+        <div class="row g-2">
+            <div class="col-md-5">
+                <input type="text" name="image_urls[]" class="form-control" placeholder="Image URL">
+            </div>
+            <div class="col-md-5">
+                <input type="file" name="image_files[]" class="form-control" accept="image/*">
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-danger w-100" onclick="removeImageRow(this)">Remove</button>
+            </div>
+        </div>
+    `;
+    container.appendChild(newRow);
+    updateAddButton();
+}
+
+function removeImageRow(btn) {
+    btn.closest('.image-row').remove();
+    imageCount--;
+    updateAddButton();
+}
+
+function updateAddButton() {
+    const addBtn = document.querySelector('button[onclick="addImageRow()"]');
+    if (!addBtn) return;
+    
+    if (imageCount >= MAX_IMAGES) {
+        addBtn.disabled = true;
+        addBtn.classList.add('disabled');
+        addBtn.innerHTML = '<i class="bi bi-exclamation-triangle"></i> Maximum 6 Images';
+    } else {
+        addBtn.disabled = false;
+        addBtn.classList.remove('disabled');
+        addBtn.innerHTML = '<i class="bi bi-plus-circle"></i> Add More Images';
+    }
+}
+</script>
 
 <?php require_once 'includes/footer.php'; ?>

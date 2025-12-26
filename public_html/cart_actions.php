@@ -37,7 +37,10 @@ if ($action == 'add') {
             ];
         }
     }
+    
+    $_SESSION['success'] = 'Product added to cart!';
     header("Location: cart.php");
+    exit;
 
 } elseif ($action == 'update') {
     $product_id = $_POST['product_id'];

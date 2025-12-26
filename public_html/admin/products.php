@@ -6,22 +6,32 @@ $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $limit = 10;
 $offset = ($page - 1) * $limit;
 
+$search = $_GET['search'] ?? '';
+$where = $search ? "WHERE p.name LIKE '%$search%' OR p.id LIKE '%$search%' OR c.name LIKE '%$search%'" : "";
+
 // Total Count
-$total = $pdo->query("SELECT COUNT(*) FROM products")->fetchColumn();
+$total = $pdo->query("SELECT COUNT(*) FROM products p LEFT JOIN categories c ON p.category_id = c.id $where")->fetchColumn();
 $pages = ceil($total / $limit);
 
 // Fetch Products
-$stmt = $pdo->prepare("SELECT p.*, c.name as category_name FROM products p LEFT JOIN categories c ON p.category_id = c.id ORDER BY p.id DESC LIMIT $limit OFFSET $offset");
+$stmt = $pdo->prepare("SELECT p.*, c.name as category_name FROM products p LEFT JOIN categories c ON p.category_id = c.id $where ORDER BY p.id DESC LIMIT $limit OFFSET $offset");
 $stmt->execute();
 $products = $stmt->fetchAll();
 ?>
 
 <h3>Products</h3>
-<a href="product_form.php" class="btn btn-primary mb-3">Add New Product</a>
+<div class="d-flex justify-content-between mb-3">
+    <a href="product_form.php" class="btn btn-primary">Add New Product</a>
+    <form method="GET" class="d-flex" style="width: 350px;">
+        <input type="text" name="search" class="form-control" placeholder="Search by name, ID, or category..." value="<?php echo htmlspecialchars($search); ?>">
+        <button type="submit" class="btn btn-secondary ms-2">Search</button>
+    </form>
+</div>
 
 <table class="table table-bordered table-striped">
     <thead class="table-dark">
         <tr>
+            <th>Sr No</th>
             <th>ID</th>
             <th>Image</th>
             <th>Name</th>
@@ -34,8 +44,9 @@ $products = $stmt->fetchAll();
         </tr>
     </thead>
     <tbody>
-        <?php foreach($products as $prod): ?>
+        <?php $sr_no = ($page - 1) * $limit + 1; foreach($products as $prod): ?>
         <tr>
+            <td><?php echo $sr_no++; ?></td>
             <td><?php echo $prod['id']; ?></td>
             <td>
                 <?php

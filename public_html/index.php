@@ -19,30 +19,38 @@
             </div>
         </div>
     </div>
-    <div class="hero-scroll">
-        <span>Scroll</span>
-        <div class="scroll-indicator"></div>
-    </div>
 </section>
 
 <!-- Features Section -->
 <section class="section features">
-    <div class="container">
-        <div class="features-grid">
-            <div class="feature-card animate-fade-up delay-1">
-                <div class="feature-icon">🚀</div>
-                <h3>Premium Quality</h3>
-                <p>Hand-picked fireworks from the best manufacturers ensuring top-notch performance.</p>
+    <div class="container py-5">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-card text-center p-4">
+                    <div class="feature-icon mb-3">
+                        <i class="bi bi-rocket-takeoff" style="font-size: 3rem; color: #ff6b35;"></i>
+                    </div>
+                    <h3 class="h5 mb-3">Premium Quality</h3>
+                    <p class="text-muted">Hand-picked fireworks from the best manufacturers ensuring top-notch performance.</p>
+                </div>
             </div>
-            <div class="feature-card animate-fade-up delay-2">
-                <div class="feature-icon">🛡️</div>
-                <h3>Safety First</h3>
-                <p>100% certified and safe products. Your safety is our top priority.</p>
+            <div class="col-md-4">
+                <div class="feature-card text-center p-4">
+                    <div class="feature-icon mb-3">
+                        <i class="bi bi-shield-check" style="font-size: 3rem; color: #4ecdc4;"></i>
+                    </div>
+                    <h3 class="h5 mb-3">Safety First</h3>
+                    <p class="text-muted">100% certified and safe products. Your safety is our top priority.</p>
+                </div>
             </div>
-            <div class="feature-card animate-fade-up delay-3">
-                <div class="feature-icon">🚚</div>
-                <h3>Fast Delivery</h3>
-                <p>Quick and secure delivery to your location with tracking support.</p>
+            <div class="col-md-4">
+                <div class="feature-card text-center p-4">
+                    <div class="feature-icon mb-3">
+                        <i class="bi bi-truck" style="font-size: 3rem; color: #f7b731;"></i>
+                    </div>
+                    <h3 class="h5 mb-3">Fast Delivery</h3>
+                    <p class="text-muted">Quick and secure delivery to your location with tracking support.</p>
+                </div>
             </div>
         </div>
     </div>
@@ -58,8 +66,8 @@
         </div>
         
         <?php
-        // Fetch Featured Categories with Product Count
-        $stmt_cat = $pdo->prepare("SELECT c.*, (SELECT COUNT(*) FROM products p WHERE p.category_id = c.id AND p.is_active = 1) as product_count FROM categories c WHERE is_featured = 1 ORDER BY display_order ASC");
+        // Fetch Featured Categories with Product Count (only active)
+        $stmt_cat = $pdo->prepare("SELECT c.*, (SELECT COUNT(*) FROM products p WHERE p.category_id = c.id AND p.is_active = 1) as product_count FROM categories c WHERE is_featured = 1 AND is_active = 1 ORDER BY display_order ASC");
         $stmt_cat->execute();
         $home_categories = $stmt_cat->fetchAll();
         ?>
@@ -139,13 +147,19 @@
                                     <span class="current-price">₹<?php echo number_format($prod['price'], 2); ?></span>
                                 <?php endif; ?>
                             </div>
-                            <form action="cart.php" method="POST">
-                                <input type="hidden" name="action" value="add">
-                                <input type="hidden" name="product_id" value="<?php echo $prod['id']; ?>">
-                                <button type="submit" class="btn-add-cart">
-                                    <i class="bi bi-cart-plus me-1"></i> Add to Cart
+                            <?php if($prod['stock_status'] == 'out_of_stock'): ?>
+                                <button class="btn-add-cart" style="background: #dc3545; cursor: not-allowed;" disabled>
+                                    Out of Stock
                                 </button>
-                            </form>
+                            <?php else: ?>
+                                <form action="cart_actions.php" method="POST">
+                                    <input type="hidden" name="action" value="add">
+                                    <input type="hidden" name="product_id" value="<?php echo $prod['id']; ?>">
+                                    <button type="submit" class="btn-add-cart">
+                                        <i class="bi bi-cart-plus me-1"></i> Add to Cart
+                                    </button>
+                                </form>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>

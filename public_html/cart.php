@@ -110,12 +110,84 @@ foreach($cart as $item) $total_items += $item['quantity'];
         .cart-grid { grid-template-columns: 1fr; }
         .cart-summary { position: static; }
     }
+    
+    /* Mobile Responsive Styles */
+    @media (max-width: 768px) {
+        .cart-grid {
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .cart-items {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .cart-table {
+            min-width: 500px;
+            font-size: 0.85rem;
+        }
+        
+        .cart-table th {
+            padding: 0.5rem;
+            font-size: 0.75rem;
+        }
+        
+        .cart-table td {
+            padding: 0.5rem;
+        }
+        
+        .cart-img {
+            width: 50px;
+            height: 50px;
+        }
+        
+        .cart-product {
+            gap: 0.5rem;
+        }
+        
+        .cart-product h4 {
+            font-size: 0.9rem;
+        }
+        
+        .cart-summary {
+            padding: 1rem;
+        }
+        
+        .cart-summary h3 {
+            font-size: 1.1rem;
+        }
+        
+        .summary-row {
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .summary-total {
+            font-size: 1.1rem;
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+        }
+        
+        .btn {
+            padding: 0.65rem 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .empty-cart {
+            padding: 2rem 1rem;
+        }
+        
+        .empty-icon {
+            font-size: 3rem;
+        }
+    }
 </style>
 
-<div class="page-header">
+<div class="page-header" style="padding: 2rem 0; background: var(--gray-lighter);">
     <div class="container">
-        <h1 class="page-title animated-text">Your Inquiry List</h1>
-        <p class="page-subtitle"><?php echo $total_items; ?> Items selected</p>
+        <h1 class="page-title animated-text" style="font-size: 2rem; margin-bottom: 0.5rem;">Your Inquiry List</h1>
+        <p class="page-subtitle" style="font-size: 0.95rem;"><?php echo $total_items; ?> Items selected</p>
     </div>
 </div>
 

@@ -9,11 +9,16 @@ $inquiries = $pdo->query("SELECT * FROM inquiries $where ORDER BY id DESC")->fet
 ?>
 
 <h3>Inquiries</h3>
-<div class="btn-group mb-3">
-    <a href="inquiries.php" class="btn btn-outline-secondary <?php echo !$status ? 'active' : ''; ?>">All</a>
-    <a href="inquiries.php?status=new" class="btn btn-outline-primary <?php echo $status=='new' ? 'active' : ''; ?>">New</a>
-    <a href="inquiries.php?status=contacted" class="btn btn-outline-warning <?php echo $status=='contacted' ? 'active' : ''; ?>">Contacted</a>
-    <a href="inquiries.php?status=closed" class="btn btn-outline-success <?php echo $status=='closed' ? 'active' : ''; ?>">Closed</a>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="btn-group">
+        <a href="inquiries.php" class="btn btn-outline-secondary <?php echo !$status ? 'active' : ''; ?>">All</a>
+        <a href="inquiries.php?status=new" class="btn btn-outline-primary <?php echo $status=='new' ? 'active' : ''; ?>">New</a>
+        <a href="inquiries.php?status=contacted" class="btn btn-outline-warning <?php echo $status=='contacted' ? 'active' : ''; ?>">Contacted</a>
+        <a href="inquiries.php?status=closed" class="btn btn-outline-success <?php echo $status=='closed' ? 'active' : ''; ?>">Closed</a>
+    </div>
+    <a href="export_inquiries.php" class="btn btn-success" style="display:none;">
+        <i class="bi bi-download"></i> Export to Excel
+    </a>
 </div>
 
 <table class="table table-bordered">
@@ -24,7 +29,7 @@ $inquiries = $pdo->query("SELECT * FROM inquiries $where ORDER BY id DESC")->fet
             <th>Phone</th>
             <th>Date</th>
             <th>Status</th>
-            <th>Action</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -41,6 +46,7 @@ $inquiries = $pdo->query("SELECT * FROM inquiries $where ORDER BY id DESC")->fet
             </td>
             <td>
                 <a href="inquiry_view.php?id=<?php echo $inq['id']; ?>" class="btn btn-sm btn-info">View</a>
+                <a href="inquiry_actions.php?action=delete&id=<?php echo $inq['id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this inquiry?')">Delete</a>
             </td>
         </tr>
         <?php endforeach; ?>

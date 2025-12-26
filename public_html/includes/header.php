@@ -67,9 +67,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
     <!-- Mobile Menu -->
     <div class="mobile-menu" id="mobileMenu">
         <div class="mobile-menu-content">
-            <div class="mobile-search">
-                <input type="text" placeholder="Search products..." class="search-input">
-            </div>
             <div class="mobile-links">
                 <a href="index.php" class="mobile-link">Home</a>
                 <a href="shop.php" class="mobile-link">Shop</a>

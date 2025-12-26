@@ -29,7 +29,7 @@ $related = $stmt_rel->fetchAll();
     }
     .gallery-main {
         width: 100%;
-        height: 500px;
+        height: 380px;
         border-radius: var(--radius-lg);
         overflow: hidden;
         background: var(--gray-lighter);
@@ -41,23 +41,31 @@ $related = $stmt_rel->fetchAll();
         object-fit: contain;
     }
     .gallery-thumbs {
-        display: flex;
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
         gap: var(--spacing-sm);
-        overflow-x: auto;
-        padding-bottom: var(--spacing-xs);
+        margin-top: var(--spacing-sm);
     }
+    
+    /* Responsive: 3 columns on tablets and mobile */
+    @media (max-width: 768px) {
+        .gallery-thumbs {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+    
     .thumb {
-        width: 80px;
+        width: 100%;
         height: 80px;
         border-radius: var(--radius-sm);
         overflow: hidden;
         cursor: pointer;
         border: 2px solid transparent;
         transition: var(--transition);
-        flex-shrink: 0;
     }
     .thumb.active, .thumb:hover {
         border-color: var(--primary);
+        transform: scale(1.05);
     }
     .thumb img {
         width: 100%;
@@ -76,23 +84,23 @@ $related = $stmt_rel->fetchAll();
     .bg-red { background: #fee2e2; color: #991b1b; }
     
     .price-lg {
-        font-size: 2.5rem;
+        font-size: 1.75rem;
         font-weight: 700;
         color: var(--primary);
         margin-right: var(--spacing-sm);
     }
     .price-old-lg {
-        font-size: 1.5rem;
+        font-size: 1.25rem;
         color: var(--gray);
         text-decoration: line-through;
     }
     .qty-input {
-        width: 80px;
-        padding: 0.875rem;
+        width: 70px;
+        padding: 0.6rem;
         text-align: center;
         border: 2px solid var(--gray-light);
         border-radius: var(--radius-md);
-        font-size: 1rem;
+        font-size: 0.95rem;
     }
     .cart-actions {
         display: flex;
@@ -101,7 +109,17 @@ $related = $stmt_rel->fetchAll();
     }
     @media (max-width: 768px) {
         .product-detail-grid { grid-template-columns: 1fr; }
-        .gallery-main { height: 350px; }
+        .gallery-main { height: 300px; }
+        .product-details h1 { font-size: 1.5rem; }
+        .price-lg { font-size: 1.5rem; }
+    }
+    
+    /* Product title styling */
+    .product-details h1 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+        line-height: 1.3;
     }
 </style>
 
@@ -143,7 +161,7 @@ $related = $stmt_rel->fetchAll();
                     <span class="product-badge-lg bg-red"><i class="bi bi-x-circle"></i> Out of Stock</span>
                 <?php endif; ?>
 
-                <h1 style="font-size: 2.5rem; margin-bottom: var(--spacing-sm);"><?php echo htmlspecialchars($product['name']); ?></h1>
+                <h1><?php echo htmlspecialchars($product['name']); ?></h1>
                 
                 <div style="display: flex; align-items: center; margin-bottom: var(--spacing-md);">
                     <span class="price-lg">₹<?php echo $product['sale_price'] ?: $product['price']; ?></span>
@@ -153,26 +171,31 @@ $related = $stmt_rel->fetchAll();
                     <?php endif; ?>
                 </div>
 
-                <p style="color: var(--gray); line-height: 1.8; margin-bottom: var(--spacing-lg);">
-                    <?php echo nl2br(htmlspecialchars($product['description'])); ?>
-                </p>
+                <p class="product-description"><?php echo nl2br(htmlspecialchars($product['description'])); ?></p>
 
-                <div class="card" style="padding: var(--spacing-lg); border: 1px solid var(--gray-light); border-radius: var(--radius-lg);">
-                    <form action="cart_actions.php" method="POST">
-                        <input type="hidden" name="action" value="add">
-                        <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
-                        
-                        <div class="cart-actions">
-                            <input type="number" name="quantity" value="1" min="1" class="qty-input">
-                            <button type="submit" class="btn btn-primary btn-full">
-                                <i class="bi bi-cart-plus"></i> Add to Inquiry List
-                            </button>
-                        </div>
-                    </form>
-                    <a href="https://wa.me/?text=I am interested in <?php echo urlencode($product['name']); ?>" target="_blank" class="btn btn-secondary btn-full" style="border-color: #25D366; color: #25D366;">
-                        <i class="bi bi-whatsapp"></i> Chat on WhatsApp
-                    </a>
-                </div>
+                <?php if($product['stock_status'] == 'out_of_stock'): ?>
+                    <div class="my-4">
+                        <h4 class="text-danger">Out of Stock</h4>
+                        <p class="text-muted">This product is currently unavailable.</p>
+                    </div>
+                <?php else: ?>
+                    <div class="card" style="padding: var(--spacing-lg); border: 1px solid var(--gray-light); border-radius: var(--radius-lg);">
+                        <form action="cart_actions.php" method="POST">
+                            <input type="hidden" name="action" value="add">
+                            <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
+                            
+                            <div class="cart-actions">
+                                <input type="number" name="quantity" value="1" min="1" class="qty-input">
+                                <button type="submit" class="btn btn-primary btn-full">
+                                    <i class="bi bi-cart-plus"></i> Add to Cart
+                                </button>
+                            </div>
+                        </form>
+                        <a href="https://wa.me/?text=I am interested in <?php echo urlencode($product['name']); ?>" target="_blank" class="btn btn-secondary btn-full" style="border-color: #25D366; color: #25D366;">
+                            <i class="bi bi-whatsapp"></i> Chat on WhatsApp
+                        </a>
+                    </div>
+                <?php endif; ?>
 
                 <div style="margin-top: var(--spacing-lg); display: flex; gap: var(--spacing-md); color: var(--gray);">
                     <span><i class="bi bi-shield-check text-primary"></i> 100% Genuine</span>

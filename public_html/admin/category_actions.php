@@ -23,8 +23,8 @@ try {
     if ($action == 'add') {
         $name = $_POST['name'];
         $slug = createSlug($name);
-        $order = $_POST['display_order'];
-        
+        $order = 0; // Default display order
+        $is_featured = isset($_POST['is_featured']) ? 1 : 0;     
         // Handle Image
         $image = $_POST['image_url']; // Default to URL
         if(isset($_FILES['image_file']) && $_FILES['image_file']['error'] === UPLOAD_ERR_OK) {
@@ -50,7 +50,10 @@ try {
     } elseif ($action == 'update') {
         $id = $_POST['id'];
         $name = $_POST['name'];
-        $order = $_POST['display_order'];
+        // Keep existing display_order
+        $stmt_order = $pdo->prepare("SELECT display_order FROM categories WHERE id = ?");
+        $stmt_order->execute([$id]);
+        $order = $stmt_order->fetchColumn();
         
         // Handle Image
         $image = $_POST['image_url']; // Default to existing URL input
@@ -59,7 +62,6 @@ try {
             // Actually, keep old image if not provided?
             // Let's first check file.
             // Fetch existing to revert if needed? Or allow clearing?
-            // Simple logic: If file, use file. Else use URL.
         }
 
         if(isset($_FILES['image_file']) && $_FILES['image_file']['error'] === UPLOAD_ERR_OK) {
@@ -92,6 +94,13 @@ try {
     } elseif ($action == 'delete') {
         $id = $_GET['id'];
         $pdo->prepare("DELETE FROM categories WHERE id=?")->execute([$id]);
+    
+    } elseif ($action == 'toggle_active') {
+        $id = $_GET['id'];
+        $stmt = $pdo->prepare("UPDATE categories SET is_active = NOT is_active WHERE id = ?");
+        $result = $stmt->execute([$id]);
+        echo json_encode(['success' => $result]);
+        exit;
     
     } elseif ($action == 'toggle_featured') {
         $id = $_GET['id'];

@@ -102,51 +102,5 @@
     </div>
 </section>
 
-<!-- Team Section (Optional/Placeholder) -->
-<section class="section bg-light">
-    <div class="container">
-        <div class="section-header">
-            <h2 class="section-title">Meet Can Team</h2>
-        </div>
-        <div class="team-grid">
-            <div class="team-card reveal">
-                <div class="team-image">
-                    <div class="image-placeholder"></div>
-                </div>
-                <div class="team-info">
-                    <h4>K. Kumar</h4>
-                    <p>Founder & CEO</p>
-                </div>
-            </div>
-            <div class="team-card reveal delay-1">
-                <div class="team-image">
-                    <div class="image-placeholder"></div>
-                </div>
-                <div class="team-info">
-                    <h4>S. Kumar</h4>
-                    <p>Manager</p>
-                </div>
-            </div>
-             <div class="team-card reveal delay-2">
-                <div class="team-image">
-                    <div class="image-placeholder"></div>
-                </div>
-                <div class="team-info">
-                    <h4>R. Singh</h4>
-                    <p>Head of Logistics</p>
-                </div>
-            </div>
-             <div class="team-card reveal delay-3">
-                <div class="team-image">
-                    <div class="image-placeholder"></div>
-                </div>
-                <div class="team-info">
-                    <h4>A. Priya</h4>
-                    <p>Customer Support</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
 
 <?php require_once 'includes/footer.php'; ?>
