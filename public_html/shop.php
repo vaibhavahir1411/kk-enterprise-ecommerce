@@ -5,7 +5,8 @@ require_once 'includes/header.php';
 $category_slug = $_GET['category'] ?? '';
 $search = $_GET['search'] ?? '';
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$limit = 12;
+$sort = $_GET['sort'] ?? 'newest'; // Added sort parameter
+$limit = 20;
 $offset = ($page - 1) * $limit;
 
 $where = "WHERE is_active = 1";
@@ -23,6 +24,14 @@ if ($search) {
     $params[] = "%$search%"; $params[] = "%$search%";
 }
 
+// Sorting logic
+$order_by = "ORDER BY id DESC"; // Default
+if ($sort === 'price_asc') {
+    $order_by = "ORDER BY CASE WHEN sale_price IS NOT NULL THEN sale_price ELSE price END ASC";
+} elseif ($sort === 'price_desc') {
+    $order_by = "ORDER BY CASE WHEN sale_price IS NOT NULL THEN sale_price ELSE price END DESC";
+}
+
 // Count products
 $stmt = $pdo->prepare("SELECT COUNT(*) FROM products $where");
 $stmt->execute($params);
@@ -30,7 +39,7 @@ $total_products = $stmt->fetchColumn();
 $total_pages = ceil($total_products / $limit);
 
 // Fetch products
-$sql = "SELECT * FROM products $where ORDER BY id DESC LIMIT ? OFFSET ?";
+$sql = "SELECT * FROM products $where $order_by LIMIT ? OFFSET ?"; // Incorporated $order_by
 $stmt = $pdo->prepare($sql);
 foreach($params as $k => $v) { $stmt->bindValue($k+1, $v); }
 $next_index = count($params) + 1;
@@ -44,126 +53,157 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY display_order ASC")
 ?>
 
 <!-- Page Header -->
-<div class="page-header">
-    <div class="container">
-        <h1 class="page-title animated-text"><?php echo $category_slug ? ucfirst(str_replace('-', ' ', $category_slug)) : 'Our Collection'; ?></h1>
-        <p class="page-subtitle">Discover our premium range of certified fireworks</p>
+<!-- <div class="page-header" style="padding: 0.5rem 0;">
+    <div class="shop-container">
+        <h1 class="page-title animated-text" style="font-size: 1.75rem; margin: 0;"><?php echo $category_slug ? ucfirst(str_replace('-', ' ', $category_slug)) : 'Our Collection'; ?></h1>
     </div>
-</div>
+</div> -->
 
-<section class="section">
-    <div class="container">
-        <div class="shop-layout">
-            <!-- Sidebar -->
-            <div class="shop-sidebar" style="position: sticky; top: 100px;">
-                <div class="filter-group">
-                    <h3 class="filter-title">Search</h3>
-                    <form action="shop.php" method="GET" class="mb-3" onsubmit="return false;">
-                         <div class="search-box-sidebar" style="position: relative;">
-                             <input type="text" name="search" id="liveSearchInput" class="form-control search-input" placeholder="Search..." value="<?php echo htmlspecialchars($search); ?>" style="padding-right: 40px; border-radius: 20px;">
-                             <button type="button" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--primary);"><i class="bi bi-search"></i></button>
-                         </div>
-                    </form>
-                    <script>
-                        document.getElementById('liveSearchInput').addEventListener('input', function() {
-                            let query = this.value;
-                            let category = new URLSearchParams(window.location.search).get('category') || '';
-                            
-                            fetch(`ajax_search.php?search=${query}&category=${category}`)
-                                .then(response => response.text())
-                                .then(data => {
-                                    // Replace the grid container itself
-                                    let grid = document.querySelector('.products-grid');
-                                    if (grid) {
-                                        grid.outerHTML = data;
-                                    } else {
-                                        // If grid was removed (e.g. no results previously), append to shop-content
-                                        document.querySelector('.shop-content').insertAdjacentHTML('beforeend', data);
-                                    }
-                                });
-                        });
-                    </script>
-                </div>
-
-                <div class="filter-group">
-                    <h3 class="filter-title">Categories</h3>
-                    <div class="filter-list">
-                        <a href="shop.php" class="filter-item" style="text-decoration: none; color: inherit;">
-                             <label style="cursor: pointer;">
-                                <input type="checkbox" <?php echo !$category_slug ? 'checked' : ''; ?> onclick="window.location.href='shop.php'"> 
-                                <span>All Products</span>
-                             </label>
-                        </a>
+<section class="section" style="padding-top: 100px;">
+    <div class="shop-container">
+        <!-- Sticky Filters Bar -->
+        <div class="sticky-filters">
+            <div class="filter-container">
+                
+                <!-- Category Dropdown Wrapper -->
+                <div style="position: relative;">
+                    <button class="btn-category-toggle" id="categoryToggle">
+                        <i class="bi bi-grid-fill"></i> Categories
+                    </button>
+                    <div class="category-dropdown-menu" id="categoryDropdown">
+                        <a href="shop.php" class="dropdown-item">All Products</a>
                         <?php foreach($categories as $cat): ?>
-                            <a href="shop.php?category=<?php echo $cat['slug']; ?>" class="filter-item" style="text-decoration: none; color: inherit;">
-                                <label style="cursor: pointer;">
-                                    <input type="checkbox" <?php echo $category_slug == $cat['slug'] ? 'checked' : ''; ?> onclick="window.location.href='shop.php?category=<?php echo $cat['slug']; ?>'">
-                                    <span><?php echo $cat['name']; ?></span>
-                                </label>
+                            <a href="shop.php?category=<?php echo $cat['slug']; ?>" class="dropdown-item">
+                                <?php echo htmlspecialchars($cat['name']); ?>
                             </a>
                         <?php endforeach; ?>
                     </div>
                 </div>
-                
-                <div class="filter-group">
-                    <h3 class="filter-title">Sort By</h3>
-                    <select class="filter-select" onchange="/* Sort logic could go here */">
-                        <option>Newest First</option>
-                        <option>Price: Low to High</option>
-                        <option>Price: High to Low</option>
-                    </select>
+
+                <!-- Search -->
+                <div class="search-wrapper">
+                     <div class="search-box-sidebar">
+                         <input type="text" id="liveSearchInput" class="form-control search-input" placeholder="Search..." value="<?php echo htmlspecialchars($search); ?>">
+                         <button type="button"><i class="bi bi-search"></i></button>
+                     </div>
                 </div>
+
+                <div style="position: relative;">
+                    <button class="btn-filter-toggle" id="filterToggle">
+                        <i class="bi bi-filter-right"></i> <span class="d-none d-md-inline">Filter</span>
+                    </button>
+                    <div class="filter-dropdown-menu" id="filterDropdown">
+                        <div class="dropdown-header px-3 py-2 text-muted small">Sort By</div>
+                        <button class="dropdown-item" onclick="applySort('newest')">Newest First</button>
+                        <button class="dropdown-item" onclick="applySort('price_asc')">Price: Low to High</button>
+                        <button class="dropdown-item" onclick="applySort('price_desc')">Price: High to Low</button>
+                    </div>
+                </div>
+
             </div>
+        </div>
 
-            <!-- Content -->
-            <div class="shop-content">
+        <script>
+            // Live Search
+            document.getElementById('liveSearchInput').addEventListener('input', function() {
+                let query = this.value;
+                let category = new URLSearchParams(window.location.search).get('category') || '';
+                let sort = new URLSearchParams(window.location.search).get('sort') || 'newest';
+                
+                fetch(`ajax_search.php?search=${query}&category=${category}&sort=${sort}`)
+                    .then(response => response.text())
+                    .then(data => {
+                        let container = document.getElementById('products-result-container');
+                        if (container) {
+                             container.innerHTML = data;
+                        }
+                    });
+            });
+
+            // Category Dropdown Toggle
+            document.getElementById('categoryToggle').addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('categoryDropdown').classList.toggle('show');
+                document.getElementById('filterDropdown').classList.remove('show'); // HTML fix
+            });
+
+            // Filter Dropdown Toggle
+            document.getElementById('filterToggle').addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('filterDropdown').classList.toggle('show');
+                document.getElementById('categoryDropdown').classList.remove('show');
+            });
+
+            // Apply Sort Function
+            function applySort(sortValue) {
+                let search = new URLSearchParams(window.location.search).get('search') || '';
+                let category = new URLSearchParams(window.location.search).get('category') || '';
+                window.location.href = `shop.php?category=${category}&search=${search}&sort=${sortValue}`;
+            }
+
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('#categoryToggle') && !e.target.closest('#categoryDropdown')) {
+                    document.getElementById('categoryDropdown').classList.remove('show');
+                }
+                if (!e.target.closest('#filterToggle') && !e.target.closest('#filterDropdown')) {
+                    document.getElementById('filterDropdown').classList.remove('show');
+                }
+            });
+        </script>
+
+        <!-- Content -->
+        <div class="shop-content">
+            <div id="products-result-container">
                 <div class="products-header">
-                     <span class="products-count"><?php echo $total_products; ?> Products found</span>
+                        <span class="products-count">
+                            <?php echo $search ? $total_products . ' Products found' : 'Total Products : ' . $total_products; ?>
+                        </span>
                 </div>
-
-                <div class="products-grid">
-                    <?php if (count($products) > 0): ?>
-                        <?php foreach($products as $prod): 
-                             // Image logic
-                             $stmt = $pdo->prepare("SELECT image_path FROM product_images WHERE product_id = ? ORDER BY is_primary DESC LIMIT 1");
-                             $stmt->execute([$prod['id']]);
-                             $img = $stmt->fetchColumn(); 
-                             $img = $img ? $img : 'https://via.placeholder.com/400x400?text=No+Image';
-                        ?>
-                        <div class="product-card">
-                             
-                             <div class="product-image">
-                                 <img src="<?php echo $img; ?>" alt="<?php echo $prod['name']; ?>" style="width:100%; height:100%; object-fit:cover;">
-                                 <div class="product-overlay">
-                                     <a href="product.php?id=<?php echo $prod['id']; ?>" class="quick-view-btn">View Details</a>
-                                 </div>
-                             </div>
-                             
-                             <div class="product-info">
-                                 <a href="product.php?id=<?php echo $prod['id']; ?>">
-                                     <h3 class="product-name"><?php echo htmlspecialchars($prod['name']); ?></h3>
-                                 </a>
-                                 <div class="product-price">
-                                     <span class="current-price">₹<?php echo $prod['sale_price'] ?: $prod['price']; ?></span>
-                                     <?php if($prod['sale_price']): ?>
-                                         <span class="original-price">₹<?php echo $prod['price']; ?></span>
-                                     <?php endif; ?>
-                                 </div>
-                                 <form action="cart_actions.php" method="POST" class="mt-2">
-                                     <input type="hidden" name="action" value="add">
-                                     <input type="hidden" name="product_id" value="<?php echo $prod['id']; ?>">
-                                     <input type="hidden" name="quantity" value="1">
-                                     <button type="submit" class="btn-add-cart"><i class="bi bi-cart-plus"></i> Add to Cart</button>
-                                 </form>
-                             </div>
-                        </div>
-                        <?php endforeach; ?>
+            <div class="products-grid">
+                <?php if (count($products) > 0): ?>
+                    <?php foreach($products as $prod): 
+                            // Image logic
+                            $stmt = $pdo->prepare("SELECT image_path FROM product_images WHERE product_id = ? ORDER BY is_primary DESC LIMIT 1");
+                            $stmt->execute([$prod['id']]);
+                            $img = $stmt->fetchColumn(); 
+                            $img = $img ? $img : 'https://via.placeholder.com/400x400?text=No+Image';
+                    ?>
+                    <div class="product-card">
+                            
+                            <div class="product-image">
+                                <img src="<?php echo $img; ?>" alt="<?php echo $prod['name']; ?>" style="width:100%; height:100%; object-fit:cover;">
+                                <div class="product-overlay">
+                                    <a href="product.php?id=<?php echo $prod['id']; ?>" class="quick-view-btn">View Details</a>
+                                </div>
+                            </div>
+                            
+                            <div class="product-info">
+                                <a href="product.php?id=<?php echo $prod['id']; ?>">
+                                    <h3 class="product-name"><?php echo htmlspecialchars($prod['name']); ?></h3>
+                                </a>
+                                <div class="product-price">
+                                    <span class="current-price">₹<?php echo $prod['sale_price'] ?: $prod['price']; ?></span>
+                                    <?php if($prod['sale_price']): ?>
+                                        <span class="original-price">₹<?php echo $prod['price']; ?></span>
+                                    <?php endif; ?>
+                                </div>
+                                <form action="cart_actions.php" method="POST" class="mt-2">
+                                    <input type="hidden" name="action" value="add">
+                                    <input type="hidden" name="product_id" value="<?php echo $prod['id']; ?>">
+                                    <input type="hidden" name="quantity" value="1">
+                                    <button type="submit" class="btn-add-cart"><i class="bi bi-cart-plus"></i> Add to Cart</button>
+                                </form>
+                            </div>
+                    </div>
+                    <?php endforeach; ?>
                     <?php else: ?>
                         <div class="col-12 text-center" style="grid-column: 1/-1;">
                             <p class="text-muted">No products found for this selection.</p>
                             <a href="shop.php" class="btn btn-primary">View All Products</a>
                         </div>
                     <?php endif; ?>
+                </div>
                 </div>
 
                 <!-- Pagination -->
@@ -175,7 +215,6 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY display_order ASC")
                     </div>
                 <?php endif; ?>
             </div>
-        </div>
     </div>
 </section>
 

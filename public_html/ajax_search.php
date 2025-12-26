@@ -19,13 +19,34 @@ if ($search) {
     $params[] = "%$search%"; $params[] = "%$search%";
 }
 
-$sql = "SELECT * FROM products $where ORDER BY id DESC LIMIT 12";
+$sort = $_GET['sort'] ?? 'newest';
+
+if ($sort === 'price_asc') {
+    $order_by = "ORDER BY CASE WHEN sale_price IS NOT NULL THEN sale_price ELSE price END ASC";
+} elseif ($sort === 'price_desc') {
+    $order_by = "ORDER BY CASE WHEN sale_price IS NOT NULL THEN sale_price ELSE price END DESC";
+} else {
+    $order_by = "ORDER BY id DESC";
+}
+
+$sql = "SELECT * FROM products $where $order_by LIMIT 20";
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $products = $stmt->fetchAll();
 
+// Count total results for this search query (without limit if needed, but for now using count of fetched or a separate query if we implemented pagination here. Sticking to fetched count for accurate 'found' on this page).
+// Ideally we run a COUNT query. Let's do it for accuracy.
+$count_sql = "SELECT COUNT(*) FROM products $where";
+$stmt_count = $pdo->prepare($count_sql);
+$stmt_count->execute($params);
+$total_found = $stmt_count->fetchColumn();
+
 if (count($products) > 0) {
-    echo '<div class="products-grid">';
+    echo '
+    <div class="products-header">
+        <span class="products-count">' . ($search ? $total_found . ' Products found' : 'Total Products : ' . $total_found) . '</span>
+    </div>
+    <div class="products-grid">';
     foreach($products as $prod) {
         // Image logic
         $stmt = $pdo->prepare("SELECT image_path FROM product_images WHERE product_id = ? ORDER BY is_primary DESC LIMIT 1");
