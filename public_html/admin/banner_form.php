@@ -10,8 +10,12 @@ $themes = $pdo->query("SELECT * FROM themes")->fetchAll();
     <input type="hidden" name="action" value="add">
     
     <div class="mb-3">
-        <label>Banner Image URL</label>
-        <input type="text" name="image_path" class="form-control" required placeholder="https://...">
+        <label>Banner Media (Image or Video)</label>
+        <div class="input-group">
+            <input type="file" name="banner_file" class="form-control" accept="image/*,video/mp4,video/webm">
+        </div>
+        <small class="text-muted">Or leave empty to use URL if needed (Legacy Support)</small>
+        <input type="text" name="image_path" class="form-control mt-2" placeholder="Or enter direct URL (https://...)">
     </div>
     <div class="mb-3">
         <label>Title</label>
@@ -20,6 +24,10 @@ $themes = $pdo->query("SELECT * FROM themes")->fetchAll();
     <div class="mb-3">
         <label>Subtitle</label>
         <input type="text" name="subtitle" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label>Button Link (Optional)</label>
+        <input type="text" name="link" class="form-control" placeholder="e.g. shop.php?category=diwali" value="shop.php">
     </div>
     <div class="mb-3">
         <label>Assign to Theme</label>

@@ -20,7 +20,7 @@ $banners = $pdo->query("SELECT b.*, t.name as theme_name FROM banners b LEFT JOI
     <tbody>
         <?php foreach($banners as $b): ?>
         <tr>
-            <td><img src="<?php echo $b['image_path']; ?>" style="height:50px;"></td>
+            <td><img src="../<?php echo $b['image_path']; ?>" style="height:50px; object-fit: cover;"></td>
             <td><?php echo $b['title']; ?></td>
             <td><?php echo $b['theme_name'] ? $b['theme_name'] : 'All Themes'; ?></td>
             <td>

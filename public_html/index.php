@@ -1,119 +1,170 @@
 <?php require_once 'includes/header.php'; ?>
 
-<!-- Hero / Slider -->
-<?php
-// Fetch Banners for active theme or global
-$theme_id_clause = $active_theme ? "OR theme_id = " . $active_theme['id'] : "";
-$stmt = $pdo->query("SELECT * FROM banners WHERE is_active = 1 AND (theme_id IS NULL $theme_id_clause) ORDER BY display_order ASC");
-$banners = $stmt->fetchAll();
-?>
-
-<div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
-  <div class="carousel-inner">
-    <?php if ($banners): ?>
-        <?php foreach($banners as $index => $banner): ?>
-            <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?>">
-                <img src="<?php echo $banner['image_path']; ?>" class="d-block w-100" style="height: 500px; object-fit: cover;" alt="<?php echo $banner['title']; ?>">
-                <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded">
-                    <h5><?php echo $banner['title']; ?></h5>
-                    <p><?php echo $banner['subtitle']; ?></p>
-                    <?php if($banner['link']): ?>
-                        <a href="<?php echo $banner['link']; ?>" class="btn btn-warning">Explore</a>
-                    <?php endif; ?>
-                </div>
-            </div>
-        <?php endforeach; ?>
-    <?php else: ?>
-        <!-- Default Static Banner -->
-        <div class="carousel-item active">
-            <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 500px;">
-                <div class="text-center">
-                    <h1 class="display-3 fw-bold">Celebrate with a Bang!</h1>
-                    <p class="lead">Premium Fireworks for Every Occasion</p>
-                    <a href="shop.php" class="btn btn-lg btn-warning mt-3">Shop Now</a>
-                </div>
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-bg"></div>
+    <div class="container hero-container">
+        <div class="hero-content animate-fade-up">
+            <span class="section-tag">Premium Collection</span>
+            <h1 class="hero-title gradient-text">Light Up The<br>Night Sky</h1>
+            <p class="hero-subtitle">Experience the magic with our premium range of certified fireworks. Safe, spectacular, and delivered to your doorstep.</p>
+            <div class="hero-cta">
+                <a href="shop.php" class="btn btn-primary">Shop Now</a>
+                <a href="contact.php" class="btn btn-secondary">Contact Us</a>
             </div>
         </div>
-    <?php endif; ?>
-  </div>
-  <?php if(count($banners) > 1): ?>
-    <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon"></span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
-        <span class="carousel-control-next-icon"></span>
-    </button>
-  <?php endif; ?>
-</div>
-
-<div class="container my-5">
-    <!-- Featured Categories -->
-    <h2 class="text-center mb-4">Top Categories</h2>
-    <div class="row g-4">
-        <?php
-        $cats = $pdo->query("SELECT * FROM categories ORDER BY display_order ASC LIMIT 4")->fetchAll();
-        foreach($cats as $cat):
-        ?>
-        <div class="col-md-3 col-6">
-            <a href="shop.php?category=<?php echo $cat['slug']; ?>" class="text-decoration-none text-dark">
-                <div class="card h-100 shadow-sm category-card text-center p-3">
-                    <?php if($cat['image']): ?>
-                        <img src="<?php echo $cat['image']; ?>" class="img-fluid mb-2" style="height: 100px; object-fit: contain;">
-                    <?php else: ?>
-                        <div class="bg-light d-flex align-items-center justify-content-center mb-2" style="height:100px;">
-                            <i class="bi bi-box-seam display-4 text-muted"></i>
-                        </div>
-                    <?php endif; ?>
-                    <h5 class="card-title mb-0"><?php echo $cat['name']; ?></h5>
-                </div>
-            </a>
+        <div class="hero-image animate-fade-up delay-1">
+            <div class="hero-card">
+                 <div class="firework-display"></div>
+            </div>
         </div>
-        <?php endforeach; ?>
     </div>
+    <div class="hero-scroll">
+        <span>Scroll</span>
+        <div class="scroll-indicator"></div>
+    </div>
+</section>
 
-    <!-- Featured Products -->
-    <h2 class="text-center my-5">Featured Crackers</h2>
-    <div class="row g-4">
+<!-- Features Section -->
+<section class="section features">
+    <div class="container">
+        <div class="features-grid">
+            <div class="feature-card animate-fade-up delay-1">
+                <div class="feature-icon">🚀</div>
+                <h3>Premium Quality</h3>
+                <p>Hand-picked fireworks from the best manufacturers ensuring top-notch performance.</p>
+            </div>
+            <div class="feature-card animate-fade-up delay-2">
+                <div class="feature-icon">🛡️</div>
+                <h3>Safety First</h3>
+                <p>100% certified and safe products. Your safety is our top priority.</p>
+            </div>
+            <div class="feature-card animate-fade-up delay-3">
+                <div class="feature-icon">🚚</div>
+                <h3>Fast Delivery</h3>
+                <p>Quick and secure delivery to your location with tracking support.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Categories Section -->
+<section class="section bg-light">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-tag">Explore</span>
+            <h2 class="section-title">Shop By Category</h2>
+            <p class="section-subtitle">Find the perfect fireworks for every occasion</p>
+        </div>
+        
         <?php
-        $feat = $pdo->query("SELECT * FROM products WHERE is_active = 1 AND is_featured = 1 LIMIT 8")->fetchAll();
-        foreach($feat as $prod):
+        // Fetch Featured Categories
+        $stmt_cat = $pdo->prepare("SELECT * FROM categories WHERE is_featured = 1 ORDER BY display_order ASC LIMIT 3");
+        $stmt_cat->execute();
+        $home_categories = $stmt_cat->fetchAll();
         ?>
-        <div class="col-md-3 col-sm-6">
-            <div class="card h-100 shadow-sm product-card">
-                <?php
-                // Get primary image
-                $stmt = $pdo->prepare("SELECT image_path FROM product_images WHERE product_id = ? ORDER BY is_primary DESC LIMIT 1");
-                $stmt->execute([$prod['id']]);
-                $img = $stmt->fetchColumn();
-                $img_src = $img ? $img : 'https://via.placeholder.com/300x300?text=No+Image';
+
+        <div class="categories-grid" id="categoriesGrid">
+            <?php if ($home_categories): ?>
+                <?php foreach($home_categories as $cat): 
+                    // Use a default gradient if no specific image logic (or add category image logic later)
+                    // For now, rotating gradients based on ID
+                    $gradients = [
+                        'linear-gradient(135deg, #FF6B35 0%, #FFB627 100%)',
+                        'linear-gradient(135deg, #6C5CE7 0%, #a29bfe 100%)',
+                        'linear-gradient(135deg, #00cec9 0%, #81ecec 100%)',
+                        'linear-gradient(135deg, #fd79a8 0%, #e84393 100%)',
+                        'linear-gradient(135deg, #0984e3 0%, #74b9ff 100%)'
+                    ];
+                    $bg = $gradients[$cat['id'] % count($gradients)];
+                    
+                    // Check if image exists
+                    $bg_style = "background: " . $bg . ";";
+                    if (!empty($cat['image'])) {
+                        // Assuming images are stored in uploads/ or full URL
+                        $img_url = $cat['image'];
+                        $bg_style = "background-image: url('" . $img_url . "'); background-size: cover; background-position: center;";
+                    }
                 ?>
-                <img src="<?php echo $img_src; ?>" class="card-img-top" alt="<?php echo $prod['name']; ?>" style="height: 200px; object-fit: cover;">
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title"><?php echo $prod['name']; ?></h5>
-                    <div class="mt-auto">
-                        <?php if($prod['sale_price']): ?>
-                            <p class="card-text mb-1">
-                                <span class="text-decoration-line-through text-muted small">₹<?php echo $prod['price']; ?></span>
-                                <span class="text-danger fw-bold">₹<?php echo $prod['sale_price']; ?></span>
-                            </p>
-                        <?php else: ?>
-                            <p class="card-text fw-bold mb-1">₹<?php echo $prod['price']; ?></p>
-                        <?php endif; ?>
-                        
-                        <div class="d-grid gap-2">
-                             <a href="product.php?id=<?php echo $prod['id']; ?>" class="btn btn-outline-secondary btn-sm">View</a>
-                             <form action="cart_actions.php" method="POST">
-                                 <input type="hidden" name="action" value="add">
-                                 <input type="hidden" name="product_id" value="<?php echo $prod['id']; ?>">
-                                 <button type="submit" class="btn btn-primary btn-sm w-100">Add to List</button>
-                             </form>
-                        </div>
+                <div class="category-card click-card" onclick="window.location.href='shop.php?category=<?php echo $cat['slug']; ?>'">
+                    <div class="category-image" style="<?php echo $bg_style; ?>"></div>
+                    <div class="category-overlay"></div>
+                    <div class="category-content">
+                        <h3><?php echo htmlspecialchars($cat['name']); ?></h3>
+                        <p><?php echo htmlspecialchars($cat['description']); ?></p>
+                        <span class="category-link">Shop Now <i class="bi bi-arrow-right"></i></span>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <div class="col-12 text-center">
+                    <p>No featured categories found.</p>
+                </div>
+            <?php endif; ?>
+        </div>
+        
+        <div class="text-center" style="margin-top: 60px;">
+            <a href="shop.php" class="btn btn-secondary px-5 py-3 rounded-pill shadow-sm">View All Categories</a>
+        </div>
+    </div>
+</section>
+
+<!-- Why Choose Us / Stats -->
+<section class="section" id="about">
+     <div class="container">
+        <div class="why-grid">
+            <div class="why-content reveal">
+                <span class="section-tag">Why Choose Us</span>
+                <h2 class="section-title">Experience the Magic of Celebration</h2>
+                <p class="why-text">
+                    For over 15 years, KK Enterprise has been the trusted name in premium fireworks. 
+                    We believe in quality, safety, and creating unforgettable moments.
+                </p>
+                <div class="why-list">
+                    <li><span class="check-icon"><i class="bi bi-check"></i></span> Certified Products</li>
+                    <li><span class="check-icon"><i class="bi bi-check"></i></span> Best Market Prices</li>
+                    <li><span class="check-icon"><i class="bi bi-check"></i></span> Expert Support</li>
+                </div>
+                <a href="about.php" class="btn btn-primary">Learn More</a>
+            </div>
+            <div class="why-stats reveal">
+                <div class="stats-card">
+                    <div class="stat">
+                        <h3>15+</h3>
+                        <p>Years Experience</p>
+                    </div>
+                    <div class="stat">
+                        <h3>500+</h3>
+                        <p>Products</p>
+                    </div>
+                    <div class="stat">
+                        <h3>50k+</h3>
+                        <p>Happy Customers</p>
+                    </div>
+                    <div class="stat">
+                        <h3>100%</h3>
+                        <p>Safety Record</p>
                     </div>
                 </div>
             </div>
         </div>
-        <?php endforeach; ?>
+     </div>
+</section>
+
+<!-- CTA Section -->
+<section class="section">
+    <div class="container">
+        <div class="cta-card reveal">
+            <div class="cta-content">
+                 <h2>Ready to Celebrate?</h2>
+                 <p>Get exclusive deals on bulk orders for weddings and events.</p>
+            </div>
+            <div class="cta-buttons">
+                <a href="shop.php" class="btn btn-primary" style="background: var(--white); color: var(--primary);">Shop Now</a>
+                <a href="contact.php" class="btn btn-secondary" style="background: transparent; color: var(--white); border-color: var(--white);">Contact Us</a>
+            </div>
+        </div>
     </div>
-</div>
+</section>
 
 <?php require_once 'includes/footer.php'; ?>

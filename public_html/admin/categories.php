@@ -14,6 +14,7 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY display_order ASC")
             <th>Name</th>
             <th>Display Order</th>
             <th>Image</th>
+            <th>Featured</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -26,6 +27,9 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY display_order ASC")
                 <?php if($cat['image']): ?>
                     <img src="<?php echo $cat['image']; ?>" style="height: 50px;">
                 <?php endif; ?>
+            </td>
+            <td>
+                <input type="checkbox" disabled <?php echo $cat['is_featured'] ? 'checked' : ''; ?>>
             </td>
             <td>
                 <a href="category_form.php?id=<?php echo $cat['id']; ?>" class="btn btn-sm btn-info">Edit</a>

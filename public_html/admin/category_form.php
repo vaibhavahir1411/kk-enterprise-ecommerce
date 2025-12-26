@@ -34,6 +34,11 @@ if (isset($_GET['id'])) {
          <small>Or simple URL for now. </small>
     </div>
 
+    <div class="mb-3 form-check">
+        <input type="checkbox" class="form-check-input" name="is_featured" id="is_featured" value="1" <?php echo ($category && $category['is_featured']) ? 'checked' : ''; ?>>
+        <label class="form-check-label" for="is_featured">Show on Home Page (Featured)</label>
+    </div>
+
     <button type="submit" class="btn btn-primary">Save</button>
     <a href="categories.php" class="btn btn-secondary">Cancel</a>
 </form>

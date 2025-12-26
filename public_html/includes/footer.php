@@ -1,37 +1,59 @@
-<footer class="bg-dark text-white pt-5 pb-3 mt-5">
+<footer class="footer">
     <div class="container">
-        <div class="row">
-            <div class="col-md-4 mb-3">
-                <h5>Fireworks Shop</h5>
-                <p>Bringing light and joy to your celebrations safely and affordably.</p>
+        <div class="footer-grid">
+            <!-- Brand -->
+            <div class="footer-brand">
+                <div class="footer-logo">
+                     <span class="brand-text" style="color:var(--white)">KK Enterprise</span>
+                </div>
+                <p class="footer-desc">
+                    Lighting up your celebrations with premium fireworks. Safe, certified, and spectacular.
+                </p>
+                <div class="social-links">
+                    <a href="#" class="social-link"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="social-link"><i class="bi bi-instagram"></i></a>
+                    <a href="#" class="social-link"><i class="bi bi-twitter-x"></i></a>
+                </div>
             </div>
-            <div class="col-md-4 mb-3">
-                <h5>Quick Links</h5>
-                <ul class="list-unstyled">
-                    <li><a href="index.php" class="text-white-50 text-decoration-none">Home</a></li>
-                    <li><a href="shop.php" class="text-white-50 text-decoration-none">Shop</a></li>
-                    <li><a href="cart.php" class="text-white-50 text-decoration-none">My List</a></li>
-                    <li><a href="admin/login.php" class="text-white-50 text-decoration-none">Admin Login</a></li>
+
+            <!-- Quick Links -->
+            <div>
+                <h5 class="footer-title">Quick Links</h5>
+                <div class="footer-links">
+                    <a href="index.php">Home</a>
+                    <a href="shop.php">Shop</a>
+                    <a href="about.php">About Us</a>
+                    <a href="contact.php">Contact</a>
+                </div>
+            </div>
+
+            <!-- Contact -->
+            <div>
+                <h5 class="footer-title">Contact</h5>
+                <ul class="contact-info">
+                    <li><i class="bi bi-geo-alt contact-icon"></i> 123 Firework Lane, Sivakasi</li>
+                    <li><i class="bi bi-telephone contact-icon"></i> +91 98765 43210</li>
+                    <li><i class="bi bi-envelope contact-icon"></i> info@kkenterprise.com</li>
                 </ul>
             </div>
-            <div class="col-md-4 mb-3">
-                <h5>Contact</h5>
-                <p>
-                    <i class="bi bi-geo-alt"></i> 123 Firework St, City<br>
-                    <i class="bi bi-telephone"></i> +91 98765 43210
-                </p>
+
+            <!-- Newsletter -->
+            <div class="newsletter">
+                <h5 class="footer-title">Newsletter</h5>
+                <form class="newsletter-form">
+                    <input type="email" class="newsletter-input" placeholder="Your email">
+                    <button type="submit" class="newsletter-btn"><i class="bi bi-send"></i></button>
+                </form>
             </div>
         </div>
-        <hr>
-        <div class="text-center text-muted">
-            &copy; 2025 Fireworks Shop. All rights reserved.
+        <div class="footer-bottom">
+            <p>&copy; 2024 KK Enterprise. All rights reserved.</p>
+            <p>Designed for excellence.</p>
         </div>
     </div>
 </footer>
 
-<!-- Bootstrap Bundle -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<!-- Theme Effects -->
-<script src="assets/js/theme-effects.js"></script>
+<!-- Scripts -->
+<script src="assets/js/script.js"></script>
 </body>
 </html>
