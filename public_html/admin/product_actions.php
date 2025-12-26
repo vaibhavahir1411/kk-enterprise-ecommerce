@@ -146,6 +146,13 @@ try {
         $pdo->prepare("DELETE FROM products WHERE id = ?")->execute([$id]);
         $_SESSION['success'] = "Product deleted successfully!";
         header("Location: products.php");
+
+    } elseif ($action == 'toggle_top_seller') {
+        $id = $_GET['id'];
+        $stmt = $pdo->prepare("UPDATE products SET is_top_seller = NOT is_top_seller WHERE id = ?");
+        $result = $stmt->execute([$id]);
+        echo json_encode(['success' => $result]);
+        exit;
     }
 
 } catch (PDOException $e) {

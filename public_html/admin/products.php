@@ -29,6 +29,7 @@ $products = $stmt->fetchAll();
             <th>Price</th>
             <th>Status</th>
             <th>Stock</th>
+            <th>Top Seller</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -75,6 +76,13 @@ $products = $stmt->fetchAll();
             </td>
             <td><?php echo $prod['stock_status']; ?></td>
             <td>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="topSellerSwitch<?php echo $prod['id']; ?>" 
+                           <?php echo $prod['is_top_seller'] ? 'checked' : ''; ?> 
+                           onchange="toggleTopSeller(<?php echo $prod['id']; ?>)">
+                </div>
+            </td>
+            <td>
                 <a href="product_form.php?id=<?php echo $prod['id']; ?>" class="btn btn-sm btn-info">Edit</a>
                 <a href="product_actions.php?action=delete&id=<?php echo $prod['id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</a>
             </td>
@@ -93,5 +101,21 @@ $products = $stmt->fetchAll();
     <?php endfor; ?>
   </ul>
 </nav>
+
+<script>
+function toggleTopSeller(id) {
+    fetch('product_actions.php?action=toggle_top_seller&id=' + id)
+    .then(response => response.json())
+    .then(data => {
+        if(data.success) {
+            console.log('Toggled successfully');
+        } else {
+            alert('Error updating status');
+            document.getElementById('topSellerSwitch' + id).checked = !document.getElementById('topSellerSwitch' + id).checked;
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+</script>
 
 <?php require_once 'includes/footer.php'; ?>

@@ -773,17 +773,20 @@ button {
 /* ========================================
    CATEGORIES
    ======================================== */
+/* Disabled - now using Bootstrap grid
 .categories-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: var(--spacing-lg);
 }
+*/
 
 .category-card {
     position: relative;
     border-radius: var(--radius-lg);
     overflow: hidden;
-    height: 350px;
+    /* height: 350px; */
+    /* Removed - controlled by inline styles */
     cursor: pointer;
     transition: var(--transition);
 }
@@ -1433,28 +1436,39 @@ button {
 /* Mobile Typography & Layout Refinements */
 @media (max-width: 600px) {
     .product-info {
-        padding: 0.5rem !important;
+        padding: 0.25rem !important;
     }
 
     .product-name {
         font-size: 0.95rem !important;
-        /* Larger name */
-        line-height: 1.3;
-        margin-bottom: 0.25rem;
-        height: 2.6em;
-        /* Limit to 2 lines */
+        line-height: 1.1;
+        margin-bottom: 0;
+        height: auto;
+        /* Remove fixed height constraint for tighter packing if text is short */
+        max-height: 2.2em;
+        /* Keep max height safety */
         overflow: hidden;
     }
 
     .product-price {
+        margin-top: 0.1rem;
+        margin-bottom: 0.1rem;
+        flex-wrap: wrap;
+        gap: 0.15rem;
+    }
+
+    .current-price {
         font-size: 0.85rem !important;
-        /* Smaller price */
-        margin-bottom: 0.5rem;
+    }
+
+    .original-price {
+        font-size: 0.75rem !important;
     }
 
     .btn-add-cart {
-        padding: 0.4rem;
-        font-size: 0.8rem;
+        padding: 0.25rem;
+        /* Minimal padding */
+        font-size: 0.75rem;
     }
 
     /* Ensure cards don't overflow */
@@ -1503,38 +1517,79 @@ button {
 }
 
 .product-info {
-    padding: 1.5rem;
+    padding: 0.75rem;
+    /* Reduced padding */
     flex-grow: 1;
     display: flex;
     flex-direction: column;
 }
 
 .product-name {
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 700;
     color: var(--dark);
-    margin-bottom: 0.5rem;
-    line-height: 1.4;
+    margin-bottom: 0;
+    line-height: 1.1;
+    padding-bottom: 0;
 }
 
 .product-price {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    margin-top: auto;
-    margin-bottom: 1rem;
+    gap: 0.25rem;
+    margin-top: 0.1rem;
+    margin-bottom: 0.1rem;
 }
 
 .current-price {
-    font-size: 1.25rem;
+    font-size: 1rem;
     font-weight: 700;
     color: var(--primary);
+    line-height: 1;
+    /* Tight line height */
 }
 
 .original-price {
-    font-size: 1rem;
+    font-size: 0.85rem;
     color: var(--gray);
     text-decoration: line-through;
+}
+
+.btn-add-cart {
+    width: 100%;
+    padding: 0.4rem;
+    /* Reduced padding */
+    background: var(--dark);
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.whatsapp-float {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #25d366;
+    color: #FFF;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    text-align: center;
+    font-size: 24px;
+    box-shadow: 2px 2px 3px #999;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.whatsapp-float:hover {
+    background-color: #128c7e;
+    transform: translateY(-3px);
+    color: #FFF;
 }
 
 .btn-add-cart {
@@ -2401,10 +2456,11 @@ button {
         grid-template-columns: 1fr;
     }
 
-    /* Categories */
+    /* Categories - now using Bootstrap grid
     .categories-grid {
         grid-template-columns: 1fr;
     }
+    */
 
     /* Why Choose */
     .why-grid {
@@ -2491,4 +2547,67 @@ button {
     .cta-buttons {
         justify-content: center;
     }
+}
+
+/* ========================================
+   FORCE BOOTSTRAP GRID FOR HOMEPAGE
+   ======================================== */
+.row.row-cols-2>.col,
+.row.row-cols-sm-3>.col,
+.row.row-cols-md-4>.col,
+.row.row-cols-lg-5>.col {
+    flex: 0 0 auto !important;
+}
+
+.row.row-cols-2>.col {
+    width: 50% !important;
+}
+
+@media (min-width: 576px) {
+    .row.row-cols-sm-3>.col {
+        width: 33.333333% !important;
+    }
+}
+
+@media (min-width: 768px) {
+    .row.row-cols-md-4>.col {
+        width: 25% !important;
+    }
+}
+
+@media (min-width: 992px) {
+    .row.row-cols-lg-5>.col {
+        width: 20% !important;
+    }
+}
+
+/* Ensure category and product cards don't override */
+.category-card,
+.product-card {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+/* Compact spacing for homepage product cards */
+section .product-card .product-info {
+    padding: 0.75rem !important;
+}
+
+section .product-card .product-name {
+    margin-bottom: 0.25rem !important;
+    font-size: 0.95rem !important;
+}
+
+section .product-card .product-price {
+    margin-bottom: 0.5rem !important;
+    margin-top: 0 !important;
+}
+
+section .product-card form {
+    margin-top: 0.5rem !important;
+}
+
+section .product-card .btn-add-cart {
+    padding: 0.4rem 0.8rem !important;
+    font-size: 0.85rem !important;
 }

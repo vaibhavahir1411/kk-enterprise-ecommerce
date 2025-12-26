@@ -24,13 +24,25 @@ try {
         $name = $_POST['name'];
         $slug = createSlug($name);
         $order = $_POST['display_order'];
-        $image = $_POST['image'];
-        $image = $_POST['image'];
+        
+        // Handle Image
+        $image = $_POST['image_url']; // Default to URL
+        if(isset($_FILES['image_file']) && $_FILES['image_file']['error'] === UPLOAD_ERR_OK) {
+            $ext = strtolower(pathinfo($_FILES['image_file']['name'], PATHINFO_EXTENSION));
+            $allowed = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'jfif', 'bmp', 'svg', 'tiff', 'ico'];
+            if(in_array($ext, $allowed)) {
+                $new_name = 'cat_' . uniqid() . '.' . $ext;
+                $upload_dir = '../uploads/categories/';
+                if(!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
+                
+                if(move_uploaded_file($_FILES['image_file']['tmp_name'], $upload_dir . $new_name)) {
+                    $image = 'uploads/categories/' . $new_name;
+                }
+            }
+        }
         $is_featured = isset($_POST['is_featured']) ? 1 : 0;
 
-        if ($is_featured && checkFeaturedLimit($pdo) >= 3) {
-            die("Error: You can only have 3 featured categories on the home page. Please uncheck another one first.");
-        }
+
 
         $stmt = $pdo->prepare("INSERT INTO categories (name, slug, display_order, image, is_featured) VALUES (?, ?, ?, ?, ?)");
         $stmt->execute([$name, $slug, $order, $image, $is_featured]);
@@ -39,13 +51,40 @@ try {
         $id = $_POST['id'];
         $name = $_POST['name'];
         $order = $_POST['display_order'];
-        $image = $_POST['image'];
-        $image = $_POST['image'];
+        
+        // Handle Image
+        $image = $_POST['image_url']; // Default to existing URL input
+        if (empty($image)) {
+            // If URL cleared, maybe keep old? Logic: If new file, overwrite. If no new file and URL blank, check logic.
+            // Actually, keep old image if not provided?
+            // Let's first check file.
+            // Fetch existing to revert if needed? Or allow clearing?
+            // Simple logic: If file, use file. Else use URL.
+        }
+
+        if(isset($_FILES['image_file']) && $_FILES['image_file']['error'] === UPLOAD_ERR_OK) {
+            $ext = strtolower(pathinfo($_FILES['image_file']['name'], PATHINFO_EXTENSION));
+            $allowed = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'jfif', 'bmp', 'svg', 'tiff', 'ico'];
+            if(in_array($ext, $allowed)) {
+                $new_name = 'cat_' . uniqid() . '.' . $ext;
+                $upload_dir = '../uploads/categories/';
+                if(!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
+                
+                if(move_uploaded_file($_FILES['image_file']['tmp_name'], $upload_dir . $new_name)) {
+                    $image = 'uploads/categories/' . $new_name;
+                }
+            }
+        } elseif (empty($image)) {
+             // If no file and no URL, retain old? API doesn't pass old image in hidden field easily unless I add it.
+             // We can fetch old.
+             $stmt_old = $pdo->prepare("SELECT image FROM categories WHERE id = ?");
+             $stmt_old->execute([$id]);
+             $image = $stmt_old->fetchColumn();
+             if(!empty($_POST['image_url'])) $image = $_POST['image_url']; // If URL explicitly changed
+        }
         $is_featured = isset($_POST['is_featured']) ? 1 : 0;
 
-        if ($is_featured && checkFeaturedLimit($pdo, $id) >= 3) {
-            die("Error: You can only have 3 featured categories on the home page. Please uncheck another one first.");
-        }
+
 
         $stmt = $pdo->prepare("UPDATE categories SET name=?, display_order=?, image=?, is_featured=? WHERE id=?");
         $stmt->execute([$name, $order, $image, $is_featured, $id]);
@@ -53,6 +92,24 @@ try {
     } elseif ($action == 'delete') {
         $id = $_GET['id'];
         $pdo->prepare("DELETE FROM categories WHERE id=?")->execute([$id]);
+    
+    } elseif ($action == 'toggle_featured') {
+        $id = $_GET['id'];
+        // Check current status
+        $stmt = $pdo->prepare("SELECT is_featured FROM categories WHERE id = ?");
+        $stmt->execute([$id]);
+        $current = $stmt->fetchColumn();
+        
+        // If enabling, check limit (excluding self, effectively check total count)
+        if (!$current && checkFeaturedLimit($pdo) >= 30) { // Limit increased to 30 as per user request "admin can add as many as he want"
+             echo json_encode(['success' => false, 'message' => 'Limit reached']);
+             exit;
+        }
+
+        $stmt = $pdo->prepare("UPDATE categories SET is_featured = NOT is_featured WHERE id = ?");
+        $result = $stmt->execute([$id]);
+        echo json_encode(['success' => $result]);
+        exit;
     }
 
     header("Location: categories.php");

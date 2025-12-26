@@ -29,7 +29,11 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY display_order ASC")
                 <?php endif; ?>
             </td>
             <td>
-                <input type="checkbox" disabled <?php echo $cat['is_featured'] ? 'checked' : ''; ?>>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="featuredSwitch<?php echo $cat['id']; ?>" 
+                           <?php echo $cat['is_featured'] ? 'checked' : ''; ?> 
+                           onchange="toggleFeatured(<?php echo $cat['id']; ?>)">
+                </div>
             </td>
             <td>
                 <a href="category_form.php?id=<?php echo $cat['id']; ?>" class="btn btn-sm btn-info">Edit</a>
@@ -39,5 +43,23 @@ $categories = $pdo->query("SELECT * FROM categories ORDER BY display_order ASC")
         <?php endforeach; ?>
     </tbody>
 </table>
+
+<script>
+function toggleFeatured(id) {
+    fetch('category_actions.php?action=toggle_featured&id=' + id)
+    .then(response => response.json())
+    .then(data => {
+        if(data.success) {
+            // Optional: Show toast
+            console.log('Toggled successfully');
+        } else {
+            alert('Error updating status');
+            // Revert checkbox if failed
+            document.getElementById('featuredSwitch' + id).checked = !document.getElementById('featuredSwitch' + id).checked;
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+</script>
 
 <?php require_once 'includes/footer.php'; ?>

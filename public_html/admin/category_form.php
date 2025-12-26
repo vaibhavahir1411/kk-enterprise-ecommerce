@@ -29,9 +29,20 @@ if (isset($_GET['id'])) {
     </div>
 
     <div class="mb-3">
-        <label>Image URL (Optional)</label>
-        <input type="text" name="image" class="form-control" value="<?php echo $category ? $category['image'] : ''; ?>">
-         <small>Or simple URL for now. </small>
+        <label>Image</label>
+        <div class="input-group mb-2">
+            <span class="input-group-text">URL</span>
+            <input type="text" name="image_url" class="form-control" value="<?php echo $category ? $category['image'] : ''; ?>" placeholder="https://...">
+        </div>
+        <div class="input-group">
+            <input type="file" name="image_file" class="form-control" accept="image/*">
+        </div>
+        <small class="text-muted">Upload a file OR enter a URL. File takes precedence.</small>
+        <?php if($category && $category['image']): ?>
+            <div class="mt-2">
+                <img src="<?php echo $category['image']; ?>" height="50">
+            </div>
+        <?php endif; ?>
     </div>
 
     <div class="mb-3 form-check">

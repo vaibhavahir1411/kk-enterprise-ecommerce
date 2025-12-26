@@ -31,27 +31,23 @@
             <div>
                 <h5 class="footer-title">Contact</h5>
                 <ul class="contact-info">
-                    <li><i class="bi bi-geo-alt contact-icon"></i> 123 Firework Lane, Sivakasi</li>
-                    <li><i class="bi bi-telephone contact-icon"></i> +91 98765 43210</li>
+                    <li><i class="bi bi-geo-alt contact-icon"></i> Test address</li>
+                    <li><i class="bi bi-telephone contact-icon"></i> +91 00000 00000</li>
                     <li><i class="bi bi-envelope contact-icon"></i> info@kkenterprise.com</li>
                 </ul>
             </div>
 
-            <!-- Newsletter -->
-            <div class="newsletter">
-                <h5 class="footer-title">Newsletter</h5>
-                <form class="newsletter-form">
-                    <input type="email" class="newsletter-input" placeholder="Your email">
-                    <button type="submit" class="newsletter-btn"><i class="bi bi-send"></i></button>
-                </form>
-            </div>
         </div>
         <div class="footer-bottom">
             <p>&copy; 2024 KK Enterprise. All rights reserved.</p>
-            <p>Designed for excellence.</p>
         </div>
     </div>
 </footer>
+
+<!-- Floating WhatsApp Button -->
+<a href="https://wa.me/910000000000" class="whatsapp-float" target="_blank" title="Chat with us on WhatsApp">
+    <i class="bi bi-whatsapp"></i>
+</a>
 
 <!-- Scripts -->
 <script src="assets/js/script.js"></script>

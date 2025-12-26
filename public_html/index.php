@@ -50,7 +50,7 @@
 
 <!-- Categories Section -->
 <section class="section bg-light">
-    <div class="container">
+    <div class="container container-wide">
         <div class="section-header">
             <span class="section-tag">Explore</span>
             <h2 class="section-title">Shop By Category</h2>
@@ -58,41 +58,25 @@
         </div>
         
         <?php
-        // Fetch Featured Categories
-        $stmt_cat = $pdo->prepare("SELECT * FROM categories WHERE is_featured = 1 ORDER BY display_order ASC LIMIT 3");
+        // Fetch Featured Categories with Product Count
+        $stmt_cat = $pdo->prepare("SELECT c.*, (SELECT COUNT(*) FROM products p WHERE p.category_id = c.id AND p.is_active = 1) as product_count FROM categories c WHERE is_featured = 1 ORDER BY display_order ASC");
         $stmt_cat->execute();
         $home_categories = $stmt_cat->fetchAll();
         ?>
 
-        <div class="categories-grid" id="categoriesGrid">
+        <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3 justify-content-center">
             <?php if ($home_categories): ?>
                 <?php foreach($home_categories as $cat): 
-                    // Use a default gradient if no specific image logic (or add category image logic later)
-                    // For now, rotating gradients based on ID
-                    $gradients = [
-                        'linear-gradient(135deg, #FF6B35 0%, #FFB627 100%)',
-                        'linear-gradient(135deg, #6C5CE7 0%, #a29bfe 100%)',
-                        'linear-gradient(135deg, #00cec9 0%, #81ecec 100%)',
-                        'linear-gradient(135deg, #fd79a8 0%, #e84393 100%)',
-                        'linear-gradient(135deg, #0984e3 0%, #74b9ff 100%)'
-                    ];
-                    $bg = $gradients[$cat['id'] % count($gradients)];
-                    
-                    // Check if image exists
-                    $bg_style = "background: " . $bg . ";";
-                    if (!empty($cat['image'])) {
-                        // Assuming images are stored in uploads/ or full URL
-                        $img_url = $cat['image'];
-                        $bg_style = "background-image: url('" . $img_url . "'); background-size: cover; background-position: center;";
-                    }
+                    $img_url = !empty($cat['image']) ? $cat['image'] : 'assets/images/placeholder-category.jpg';
                 ?>
-                <div class="category-card click-card" onclick="window.location.href='shop.php?category=<?php echo $cat['slug']; ?>'">
-                    <div class="category-image" style="<?php echo $bg_style; ?>"></div>
-                    <div class="category-overlay"></div>
-                    <div class="category-content">
-                        <h3><?php echo htmlspecialchars($cat['name']); ?></h3>
-                        <p><?php echo htmlspecialchars($cat['description']); ?></p>
-                        <span class="category-link">Shop Now <i class="bi bi-arrow-right"></i></span>
+                <div class="col">
+                    <div class="category-card click-card" onclick="window.location.href='shop.php?category=<?php echo $cat['slug']; ?>'" style="height: 220px; position: relative; overflow: hidden; border-radius: var(--radius-lg); cursor: pointer;">
+                        <div class="category-image" style="background-image: url('<?php echo $img_url; ?>'); background-size: cover; background-position: center; height: 100%; transition: transform 0.5s ease;"></div>
+                        <div class="category-overlay" style="background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); position: absolute; inset: 0;"></div>
+                        <div class="category-content" style="position: absolute; bottom: 0; left: 0; padding: 1rem; width: 100%; color: #fff;">
+                            <h3 style="margin-bottom: 0.25rem; font-size: 1.1rem; font-weight: 700;"><?php echo htmlspecialchars($cat['name']); ?></h3>
+                            <p class="category-count" style="margin: 0; opacity: 0.8; font-size: 0.85rem; transform: translateY(20px); transition: all 0.3s ease; opacity: 0;"><?php echo $cat['product_count']; ?> Products</p>
+                        </div>
                     </div>
                 </div>
                 <?php endforeach; ?>
@@ -103,8 +87,78 @@
             <?php endif; ?>
         </div>
         
-        <div class="text-center" style="margin-top: 60px;">
+        <div class="text-center" style="margin-top: 40px;">
             <a href="shop.php" class="btn btn-secondary px-5 py-3 rounded-pill shadow-sm">View All Categories</a>
+        </div>
+    </div>
+</section>
+
+<!-- Top Selling Products Section -->
+<section class="section">
+    <div class="container container-wide">
+        <div class="section-header">
+            <span class="section-tag">Best Sellers</span>
+            <h2 class="section-title">Top Selling Products</h2>
+            <p class="section-subtitle">Customer favorites you shouldn't miss</p>
+        </div>
+
+        <?php
+        $stmt_top = $pdo->prepare("SELECT p.*, c.name as category_name FROM products p LEFT JOIN categories c ON p.category_id = c.id WHERE p.is_top_seller = 1 AND p.is_active = 1 ORDER BY p.id DESC");
+        $stmt_top->execute();
+        $top_products = $stmt_top->fetchAll();
+        ?>
+
+        <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-2 g-md-3 justify-content-center">
+            <?php if ($top_products): ?>
+                <?php foreach($top_products as $prod): 
+                     // Get Image
+                    $stmt_img = $pdo->prepare("SELECT image_path FROM product_images WHERE product_id = ? ORDER BY is_primary DESC LIMIT 1");
+                    $stmt_img->execute([$prod['id']]);
+                    $img_path = $stmt_img->fetchColumn();
+                    $img_src = $img_path ? $img_path : 'assets/images/placeholder.jpg';
+                ?>
+                <div class="col">
+                   <div class="product-card">
+                        <div class="product-image">
+                            <a href="product.php?slug=<?php echo $prod['slug']; ?>">
+                                <img src="<?php echo $img_src; ?>" alt="<?php echo htmlspecialchars($prod['name']); ?>" class="product-thumb">
+                            </a>
+                            <?php if($prod['sale_price']): ?>
+                                <span class="product-badge badge-sale">Sale</span>
+                            <?php endif; ?>
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-name">
+                                <a href="product.php?slug=<?php echo $prod['slug']; ?>"><?php echo htmlspecialchars($prod['name']); ?></a>
+                            </h3>
+                            <div class="product-price">
+                                <?php if($prod['sale_price']): ?>
+                                    <span class="current-price">₹<?php echo number_format($prod['sale_price'], 2); ?></span>
+                                    <span class="original-price">₹<?php echo number_format($prod['price'], 2); ?></span>
+                                <?php else: ?>
+                                    <span class="current-price">₹<?php echo number_format($prod['price'], 2); ?></span>
+                                <?php endif; ?>
+                            </div>
+                            <form action="cart.php" method="POST">
+                                <input type="hidden" name="action" value="add">
+                                <input type="hidden" name="product_id" value="<?php echo $prod['id']; ?>">
+                                <button type="submit" class="btn-add-cart">
+                                    <i class="bi bi-cart-plus me-1"></i> Add to Cart
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                 <div class="col-12 text-center">
+                    <p>No top selling products found.</p>
+                </div>
+            <?php endif; ?>
+        </div>
+        
+        <div class="text-center" style="margin-top: 40px;">
+            <a href="shop.php" class="btn btn-secondary px-5 py-3 rounded-pill shadow-sm">View All Products</a>
         </div>
     </div>
 </section>

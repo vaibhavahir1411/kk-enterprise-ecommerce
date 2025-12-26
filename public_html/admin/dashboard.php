@@ -25,14 +25,6 @@ $active_theme = $pdo->query("SELECT name FROM themes WHERE is_active=1")->fetchC
             </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="card text-white bg-warning mb-3">
-            <div class="card-body text-dark">
-                <h5 class="card-title">Active Theme</h5>
-                <h2><?php echo $active_theme ? $active_theme : 'Default'; ?></h2>
-            </div>
-        </div>
-    </div>
 </div>
 
 <?php require_once 'includes/footer.php'; ?>
