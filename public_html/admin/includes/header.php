@@ -128,6 +128,7 @@ if (!isset($_SESSION['admin_id'])) {
         <a href="categories.php">Categories</a>
         <a href="products.php">Products</a>
         <a href="inquiries.php">Inquiries</a>
+        <a href="settings.php">Settings</a>
 
         <!-- Hidden temporarily -->
         <a href="import_csv.php" style="display:none;">Import CSV</a>

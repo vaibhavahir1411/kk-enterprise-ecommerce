@@ -1,0 +1,23 @@
+# Database Configuration
+public_html/config/database.php
+
+# Utility / Migration scripts
+reset_admin.php
+update_db_*.php
+seed_*.php
+
+# Uploads and temporary files
+public_html/uploads/*
+!public_html/uploads/.gitkeep
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+
+# PHP Error logs
+error_log
+php_errors.log
