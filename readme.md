@@ -1,64 +1,41 @@
-# Fireworks E-Commerce Website
+# 🎆 KK Enterprise - Fireworks E-Commerce & Inquiry System
 
-A complete **inquiry-based e-commerce website for fireworks products**, built using **HTML, CSS, JavaScript, PHP, and MySQL**.  
-The project includes a **fully functional admin panel**, product management, categories, search functionality, and customer inquiry handling.
-
-This website is designed for real-world business use where customers **browse products and send inquiries** instead of direct online payment.
+A premium, localized e-commerce platform built for the fireworks industry. This system allows customers to browse a vast collection of fireworks, add them to an inquiry cart, and submit requests directly to the business.
 
 ---
 
-## 📌 Project Description
+## 🌟 Key Features
 
-This Fireworks E-Commerce Website allows customers to:
-- Browse fireworks products
-- View products by category
-- Search products easily
-- Submit inquiries for selected products
+### 🛒 Customer Interface
+- **Modern UI/UX**: A clean, responsive design with smooth animations and professional aesthetics.
+- **Smart Shop**: Advanced filtering by category, real-time search, and multiple sorting options (Newest, Price Low-High, Price High-Low).
+- **Inquiry System**: Instead of direct payments, customers add products to a "Cart" and submit a consolidated inquiry.
+- **WhatsApp Integration**: Floating contact button for direct customer engagement.
+- **Category Spotlight**: Featured categories and top-selling products prominently displayed on the homepage.
+- **Fully Responsive**: Optimized for mobile, tablet, and desktop viewing.
 
-The **Admin Panel** allows the business owner to:
-- Manage products
-- Manage categories
-- View and respond to customer inquiries
-- Control website content from one place
-
-The project focuses on **clean UI, smooth user experience, and a scalable backend structure**.
-
----
-
-## 🛠 Tech Stack
-
-- **Frontend:**  
-  - HTML5  
-  - CSS3  
-  - JavaScript
-
-- **Backend:**  
-  - PHP
-
-- **Database:**  
-  - MySQL
+### 🛡 Admin Command Center
+- **Secure Dashboard**: Overview of key stats including new inquiries and product counts.
+- **Product Management**: Full CRUD operations for products with image upload and WebP optimization support.
+- **Category Management**: Organize products into logical categories with featured status control.
+- **Inquiry Tracking**: Manage customer requests with status updates (New, Contacted, Closed).
+- **Bulk Import**: Import product data efficiently via CSV files.
 
 ---
 
-## 📂 Project Features
+## 🛠 Technology Stack
 
-### 🌐 User Side
-- Home page with modern UI
-- Product listing with categories
-- Product search functionality
-- Product detail view
-- Inquiry-based purchase system
-- Contact / Inquiry form
-- Responsive design for all devices
-
-### 🛠 Admin Panel
-- Secure admin login
-- Add / edit / delete products
-- Add / manage categories
-- View customer inquiries
-- Product availability management
-- Simple and clean dashboard UI
+- **Frontend**: HTML5, CSS3 (Modern Flex/Grid), JavaScript (ES6+), Bootstrap 5, Bootstrap Icons.
+- **Backend**: PHP 7.4+ (PDO for secure database interactions).
+- **Database**: MySQL.
+- **Deployment**: Compatible with XAMPP/WAMP or standard Linux/Windows web hosting.
 
 ---
+
+
+
+## 📝 License
+
+This project is developed for **KK Enterprise**. All rights reserved.
 
 
