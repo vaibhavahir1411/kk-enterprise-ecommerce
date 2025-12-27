@@ -36,7 +36,11 @@ foreach($cart as $item) $total += $item['price'] * $item['quantity'];
                     
                     <div class="form-row">
                         <div class="form-group">
-                            <input type="tel" name="phone" id="phone" class="form-input" placeholder=" " required>
+                            <input type="tel" name="phone" id="phone" class="form-input" placeholder=" " 
+                                   pattern="[1-9][0-9]{9}" 
+                                   maxlength="10"
+                                   title="Please enter a valid 10-digit phone number starting with 1-9"
+                                   required>
                             <label for="phone" class="form-label">Phone Number</label>
                         </div>
                         <div class="form-group">

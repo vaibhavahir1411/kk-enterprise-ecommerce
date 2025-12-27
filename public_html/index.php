@@ -148,7 +148,7 @@
                                 <?php endif; ?>
                             </div>
                             <?php if($prod['stock_status'] == 'out_of_stock'): ?>
-                                <button class="btn-add-cart" style="background: #dc3545; cursor: not-allowed;" disabled>
+                                <button class="btn-add-cart" disabled>
                                     Out of Stock
                                 </button>
                             <?php else: ?>

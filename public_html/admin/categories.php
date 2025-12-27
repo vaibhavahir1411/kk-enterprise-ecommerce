@@ -8,14 +8,17 @@ $categories = $pdo->query("SELECT c.*, (SELECT COUNT(*) FROM products WHERE cate
 ?>
 
 <h3>Categories</h3>
-<div class="d-flex justify-content-between mb-3">
-    <a href="category_form.php" class="btn btn-primary">Add Category</a>
-    <form method="GET" class="d-flex" style="width: 300px;">
-        <input type="text" name="search" class="form-control" placeholder="Search by name or ID..." value="<?php echo htmlspecialchars($search); ?>">
-        <button type="submit" class="btn btn-secondary ms-2">Search</button>
-    </form>
+<div class="mb-3">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
+        <a href="category_form.php" class="btn btn-primary">Add Category</a>
+        <form method="GET" class="d-flex gap-2" style="width: 100%; max-width: 300px;">
+            <input type="text" name="search" class="form-control" placeholder="Search..." value="<?php echo htmlspecialchars($search); ?>">
+            <button type="submit" class="btn btn-secondary">Search</button>
+        </form>
+    </div>
 </div>
 
+<div class="table-responsive">
 <table class="table table-bordered">
     <thead class="table-dark">
         <tr>
@@ -57,12 +60,13 @@ $categories = $pdo->query("SELECT c.*, (SELECT COUNT(*) FROM products WHERE cate
             </td>
             <td>
                 <a href="category_form.php?id=<?php echo $cat['id']; ?>" class="btn btn-sm btn-info">Edit</a>
-                <a href="category_actions.php?action=delete&id=<?php echo $cat['id']; ?>" class="btn btn-sm btn-danger" onclick="return confirmDelete(<?php echo $cat['id']; ?>, <?php echo $cat['product_count']; ?>)">Delete</a>
+                <a href="#" class="btn btn-sm btn-danger" onclick="event.preventDefault(); confirmDelete(<?php echo $cat['id']; ?>, <?php echo $cat['product_count']; ?>);">Delete</a>
             </td>
         </tr>
         <?php endforeach; ?>
     </tbody>
 </table>
+</div>
 
 <script>
 function toggleActive(id) {
@@ -94,11 +98,48 @@ function toggleFeatured(id) {
 }
 
 function confirmDelete(id, productCount) {
-    if (productCount > 0) {
-        return confirm(`This category has ${productCount} product(s). Deleting this category may affect these products. Continue?`);
-    }
-    return confirm('Delete this category?');
+    let message = productCount > 0 
+        ? `This category has ${productCount} product(s). Deleting this category may affect these products. Continue?`
+        : 'Are you sure you want to delete this category?';
+    
+    showConfirm(message, function(confirmed) {
+        if (confirmed) {
+            window.location.href = 'category_actions.php?action=delete&id=' + id;
+        }
+    });
 }
+</script>
+
+<script>
+// Live Search Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.querySelector('input[name="search"]');
+    
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase().trim();
+            const categoryRows = document.querySelectorAll('tbody tr');
+            
+            categoryRows.forEach(row => {
+                // Get category name (4th column), ID (2nd column), and Sr No (1st column)
+                const categoryNameCell = row.querySelector('td:nth-child(4)');
+                const idCell = row.querySelector('td:nth-child(2)');
+                
+                if (categoryNameCell && idCell) {
+                    const categoryName = categoryNameCell.textContent.toLowerCase();
+                    const categoryId = idCell.textContent.toLowerCase();
+                    
+                    // Show/hide row based on search match
+                    if (categoryName.includes(searchTerm) || categoryId.includes(searchTerm)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            });
+        });
+    }
+});
 </script>
 
 <?php require_once 'includes/footer.php'; ?>

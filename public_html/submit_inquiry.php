@@ -91,13 +91,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_SESSION['cart'])) {
                     Thanks <strong><?php echo htmlspecialchars($name); ?></strong>. We have received your interest.
                 </p>
                 
-                <div class="detail-box">
-                    <p style="margin-bottom: 0.5rem; color: var(--gray); font-size: 0.875rem;">Inquiry ID:</p>
-                    <p style="margin-bottom: 0; color: var(--dark); font-size: 1.25rem; font-weight: 700; font-family: monospace;">#<?php echo $inquiry_id; ?></p>
-                </div>
-
-                <p style="color: var(--gray); font-size: 0.875rem; margin-bottom: 2rem;">
-                    We will contact you shortly at <strong><?php echo htmlspecialchars($phone); ?></strong> to verify details and process your order.
+                <p style="color: var(--gray); font-size: 0.95rem; margin-bottom: 2rem;">
+                    We will contact you shortly to verify details and process your order.
                 </p>
                 
                 <a href="index.php" class="btn btn-primary btn-full">Back to Store</a>

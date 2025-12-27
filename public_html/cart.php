@@ -184,9 +184,9 @@ foreach($cart as $item) $total_items += $item['quantity'];
     }
 </style>
 
-<div class="page-header" style="padding: 2rem 0; background: var(--gray-lighter);">
+<div class="page-header" style="padding: 3rem 0 2rem 0; background: var(--gray-lighter); margin-top: 5rem;">
     <div class="container">
-        <h1 class="page-title animated-text" style="font-size: 2rem; margin-bottom: 0.5rem;">Your Inquiry List</h1>
+        <h1 class="page-title animated-text" style="font-size: 2rem; margin-bottom: 0.5rem;">Your Cart</h1>
         <p class="page-subtitle" style="font-size: 0.95rem;"><?php echo $total_items; ?> Items selected</p>
     </div>
 </div>

@@ -16,7 +16,7 @@
                 <span class="section-tag">Who We Are</span>
                 <h2 class="section-title">More Than Just Fireworks</h2>
                 <p class="story-text">
-                    Founded in the heart of Sivakasi, KK Enterprise began with a simple mission: to bring the joy of premium, safe fireworks to every household in India. What started as a small family business has grown into one of the most trusted names in the industry.
+                    Founded in the heart of Rajkot, Gujarat, KK Enterprise began with a simple mission: to bring the joy of premium, safe fireworks to every household in India. What started as a small family business has grown into one of the most trusted names in the industry.
                 </p>
                 <p class="story-text">
                     We believe that every celebration deserves to be spectacular. That's why we meticulously select our products from the finest manufacturers, ensuring vibrant colors, consistent performance, and above all, safety.
@@ -74,14 +74,14 @@
                 <div class="timeline-year">2008</div>
                 <div class="timeline-content">
                     <h4>The Beginning</h4>
-                    <p>KK Enterprise was established in Sivakasi with a small team and a big dream.</p>
+                    <p>KK Enterprise was established in Rajkot, Gujarat with a small team and a big dream.</p>
                 </div>
             </div>
             <div class="timeline-item reveal">
                 <div class="timeline-year">2013</div>
                 <div class="timeline-content">
                     <h4>Expanding Horizons</h4>
-                    <p>We expanded our distribution network to cover major cities across South India.</p>
+                    <p>We expanded our distribution network to cover major cities across India.</p>
                 </div>
             </div>
             <div class="timeline-item reveal">

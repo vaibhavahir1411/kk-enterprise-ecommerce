@@ -59,7 +59,7 @@ $categories = $pdo->query("SELECT * FROM categories WHERE is_active = 1 ORDER BY
     </div>
 </div> -->
 
-<section class="section" style="padding-top: 100px;">
+<section class="section" style="padding-top: 120px; margin-top: 1rem;">
     <div class="shop-container">
         <!-- Sticky Filters Bar -->
         <div class="sticky-filters">
@@ -190,7 +190,7 @@ $categories = $pdo->query("SELECT * FROM categories WHERE is_active = 1 ORDER BY
                                 <?php endif; ?>
                             </div>
                             <?php if($prod['stock_status'] == 'out_of_stock'): ?>
-                                <button class="btn-add-cart" style="background: #dc3545; cursor: not-allowed;" disabled>
+                                <button class="btn-add-cart" disabled>
                                     Out of Stock
                                 </button>
                             <?php else: ?>

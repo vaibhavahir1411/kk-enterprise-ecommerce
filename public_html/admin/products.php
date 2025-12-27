@@ -20,14 +20,17 @@ $products = $stmt->fetchAll();
 ?>
 
 <h3>Products</h3>
-<div class="d-flex justify-content-between mb-3">
-    <a href="product_form.php" class="btn btn-primary">Add New Product</a>
-    <form method="GET" class="d-flex" style="width: 350px;">
-        <input type="text" name="search" class="form-control" placeholder="Search by name, ID, or category..." value="<?php echo htmlspecialchars($search); ?>">
-        <button type="submit" class="btn btn-secondary ms-2">Search</button>
-    </form>
+<div class="mb-3">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
+        <a href="product_form.php" class="btn btn-primary">Add New Product</a>
+        <form method="GET" class="d-flex gap-2" style="width: 100%; max-width: 350px;">
+            <input type="text" name="search" class="form-control" placeholder="Search..." value="<?php echo htmlspecialchars($search); ?>">
+            <button type="submit" class="btn btn-secondary">Search</button>
+        </form>
+    </div>
 </div>
 
+<div class="table-responsive">
 <table class="table table-bordered table-striped">
     <thead class="table-dark">
         <tr>
@@ -95,12 +98,13 @@ $products = $stmt->fetchAll();
             </td>
             <td>
                 <a href="product_form.php?id=<?php echo $prod['id']; ?>" class="btn btn-sm btn-info">Edit</a>
-                <a href="product_actions.php?action=delete&id=<?php echo $prod['id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</a>
+                <a href="#" class="btn btn-sm btn-danger" onclick="event.preventDefault(); showConfirm('Are you sure you want to delete this product?', function(confirmed) { if(confirmed) window.location.href='product_actions.php?action=delete&id=<?php echo $prod['id']; ?>'; });">Delete</a>
             </td>
         </tr>
         <?php endforeach; ?>
     </tbody>
 </table>
+</div>
 
 <!-- Pagination -->
 <nav>
@@ -127,6 +131,42 @@ function toggleTopSeller(id) {
     })
     .catch(error => console.error('Error:', error));
 }
+</script>
+
+<script>
+// Live Search Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.querySelector('input[name="search"]');
+    
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase().trim();
+            const productRows = document.querySelectorAll('tbody tr');
+            
+            productRows.forEach(row => {
+                // Get product name (4th column), category (5th column), and ID (2nd column)
+                const productNameCell = row.querySelector('td:nth-child(4)');
+                const categoryCell = row.querySelector('td:nth-child(5)');
+                const idCell = row.querySelector('td:nth-child(2)');
+                
+                if (productNameCell && categoryCell && idCell) {
+                    const productName = productNameCell.textContent.toLowerCase();
+                    const category = categoryCell.textContent.toLowerCase();
+                    const productId = idCell.textContent.toLowerCase();
+                    
+                    // Show/hide row based on search match
+                    if (productName.includes(searchTerm) || 
+                        category.includes(searchTerm) || 
+                        productId.includes(searchTerm)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            });
+        });
+    }
+});
 </script>
 
 <?php require_once 'includes/footer.php'; ?>

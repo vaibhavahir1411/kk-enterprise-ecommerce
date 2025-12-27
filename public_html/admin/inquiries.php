@@ -21,6 +21,7 @@ $inquiries = $pdo->query("SELECT * FROM inquiries $where ORDER BY id DESC")->fet
     </a>
 </div>
 
+<div class="table-responsive">
 <table class="table table-bordered">
     <thead>
         <tr>
@@ -46,11 +47,12 @@ $inquiries = $pdo->query("SELECT * FROM inquiries $where ORDER BY id DESC")->fet
             </td>
             <td>
                 <a href="inquiry_view.php?id=<?php echo $inq['id']; ?>" class="btn btn-sm btn-info">View</a>
-                <a href="inquiry_actions.php?action=delete&id=<?php echo $inq['id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this inquiry?')">Delete</a>
+                <a href="#" class="btn btn-sm btn-danger" onclick="event.preventDefault(); showConfirm('Are you sure you want to delete this inquiry?', function(confirmed) { if(confirmed) window.location.href='inquiry_actions.php?action=delete&id=<?php echo $inq['id']; ?>'; });">Delete</a>
             </td>
         </tr>
         <?php endforeach; ?>
     </tbody>
 </table>
+</div>
 
 <?php require_once 'includes/footer.php'; ?>
