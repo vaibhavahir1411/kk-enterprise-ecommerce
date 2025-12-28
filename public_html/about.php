@@ -4,7 +4,7 @@
 <div class="page-header">
     <div class="container">
         <h1 class="page-title animated-text">Our Story</h1>
-        <p class="page-subtitle">Lighting up celebrations since 2008</p>
+        <p class="page-subtitle">Lighting up celebrations since 2020</p>
     </div>
 </div>
 
@@ -16,15 +16,12 @@
                 <span class="section-tag">Who We Are</span>
                 <h2 class="section-title">More Than Just Fireworks</h2>
                 <p class="story-text">
-                    Founded in the heart of Rajkot, Gujarat, KK Enterprise began with a simple mission: to bring the joy of premium, safe fireworks to every household in India. What started as a small family business has grown into one of the most trusted names in the industry.
-                </p>
-                <p class="story-text">
-                    We believe that every celebration deserves to be spectacular. That's why we meticulously select our products from the finest manufacturers, ensuring vibrant colors, consistent performance, and above all, safety.
+                    KK Enterprise brings years of trusted experience in providing high-quality fireworks for both retail customers and wedding celebrations. Since our inception, we have been committed to offering a wide range of premium fireworks for festive occasions, along with professionally managed wedding fireworks and special effects. With a strong focus on quality, safety, and customer satisfaction, we proudly serve individual buyers as well as create memorable moments for weddings and special events.
                 </p>
             </div>
             <div class="story-image reveal delay-1">
                 <div class="image-placeholder">
-                    <i class="bi bi-shop" style="font-size: 4rem; color: #ccc;"></i>
+                    <img src="assets/about_image.jpg" alt="About KK Fireworks" class="img-fluid rounded shadow" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='https://images.unsplash.com/photo-1498931299472-f7a63a5a1cfa?auto=format&fit=crop&q=80&w=1000';">
                 </div>
             </div>
         </div>
@@ -58,45 +55,6 @@
                 <div class="value-number">04</div>
                 <h3>Innovation</h3>
                 <p>We are constantly on the lookout for new and exciting firework varieties to add that extra spark to your events.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Timeline Section -->
-<section class="section">
-    <div class="container">
-        <div class="section-header">
-            <h2 class="section-title">Our Journey</h2>
-        </div>
-        <div class="timeline">
-            <div class="timeline-item reveal">
-                <div class="timeline-year">2008</div>
-                <div class="timeline-content">
-                    <h4>The Beginning</h4>
-                    <p>KK Enterprise was established in Rajkot, Gujarat with a small team and a big dream.</p>
-                </div>
-            </div>
-            <div class="timeline-item reveal">
-                <div class="timeline-year">2013</div>
-                <div class="timeline-content">
-                    <h4>Expanding Horizons</h4>
-                    <p>We expanded our distribution network to cover major cities across India.</p>
-                </div>
-            </div>
-            <div class="timeline-item reveal">
-                <div class="timeline-year">2018</div>
-                <div class="timeline-content">
-                    <h4>Going Digital</h4>
-                    <p>Launched our first online store to make ordering fireworks easier for everyone.</p>
-                </div>
-            </div>
-            <div class="timeline-item reveal">
-                <div class="timeline-year">2024</div>
-                <div class="timeline-content">
-                    <h4>Premium Redesign</h4>
-                    <p>Unveiled our new brand identity and premium product line for the modern era.</p>
-                </div>
             </div>
         </div>
     </div>

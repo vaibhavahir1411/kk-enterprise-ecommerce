@@ -7,7 +7,7 @@
         <div class="hero-content animate-fade-up">
             <span class="section-tag">Premium Collection</span>
             <h1 class="hero-title gradient-text">Light Up The<br>Night Sky</h1>
-            <p class="hero-subtitle">Experience the magic with our premium range of certified fireworks. Safe, spectacular, and delivered to your doorstep.</p>
+            <p class="hero-subtitle">Experience the magic with KK Fireworks. Safe, spectacular, and delivered to your doorstep.</p>
             <div class="hero-cta">
                 <a href="shop.php" class="btn btn-primary">Shop Now</a>
                 <a href="contact.php" class="btn btn-secondary">Contact Us</a>
@@ -15,7 +15,7 @@
         </div>
         <div class="hero-image animate-fade-up delay-1">
             <div class="hero-card">
-                 <div class="firework-display"></div>
+                 <img src="assets/about_image.jpg" alt="About KK Fireworks" class="img-fluid rounded-4" style="width: 100%; height: 400px; object-fit: cover;" onerror="this.src='https://images.unsplash.com/photo-1498931299472-f7a63a5a1cfa?auto=format&fit=crop&q=80&w=1000';">
             </div>
         </div>
     </div>
@@ -185,8 +185,8 @@
                 <span class="section-tag">Why Choose Us</span>
                 <h2 class="section-title">Experience the Magic of Celebration</h2>
                 <p class="why-text">
-                    For over 15 years, KK Enterprise has been the trusted name in premium fireworks. 
-                    We believe in quality, safety, and creating unforgettable moments.
+                    With years of trusted experience, KK Fireworks has been the leading name in premium fireworks. 
+                    We believe in quality, safety, and creating unforgettable moments for every celebration.
                 </p>
                 <div class="why-list">
                     <li><span class="check-icon"><i class="bi bi-check"></i></span> Certified Products</li>
@@ -198,11 +198,11 @@
             <div class="why-stats reveal">
                 <div class="stats-card">
                     <div class="stat">
-                        <h3>15+</h3>
+                        <h3>5+</h3>
                         <p>Years Experience</p>
                     </div>
                     <div class="stat">
-                        <h3>500+</h3>
+                        <h3>1000+</h3>
                         <p>Products</p>
                     </div>
                     <div class="stat">

@@ -17,7 +17,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KK Enterprise | Premium Fireworks</title>
+    <title>KK Fireworks | Premium Fireworks</title>
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -40,7 +40,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
         <div class="container nav-container">
             <a href="index.php" class="logo">
                 <img src="assets/logo.png" alt="KK Enterprise" style="height: 50px; width: auto;">
-                <span class="brand-text" style="margin-left: 10px; font-weight: bold; font-size: 1.5rem; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">KK Enterprise</span>
+                <span class="brand-text" style="margin-left: 10px; font-weight: bold; font-size: 1.5rem; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">KK Fireworks</span>
             </a>
 
             <div class="nav-links">
